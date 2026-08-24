@@ -2008,16 +2008,16 @@ export const Scene: React.FC<SceneProps> = ({
       const delta = clock.getDelta();
       const time = clock.getElapsedTime();
 
-      // 1. Cinematic Intro Camera Zoom-out Animation (First 2.5s Video + Audio -> Then Video Only & Zoom Out)
+      // 1. Cinematic Intro Camera Zoom-out Animation (First 4s Video + Audio -> Then Video Only & Zoom Out)
       if (isIntroActiveRef.current) {
         introTimeRef.current += delta;
         const t = introTimeRef.current;
 
-        const SLOW_PHASE_DURATION = 2.5; // First 2.5 seconds with video + audio
+        const SLOW_PHASE_DURATION = 4.0; // First 4.0 seconds with video + audio
         const FULL_ZOOM_DURATION = 2.8; // 2.8 seconds of full zoom out transition
         const TOTAL_DURATION = SLOW_PHASE_DURATION + FULL_ZOOM_DURATION;
 
-        // Audio Management: Only first 2.5s has audio, after 2.5s audio is strictly muted/paused!
+        // Audio Management: Only first 4.0s has audio, after 4.0s audio is strictly muted/paused!
         if (introAudioRef.current) {
           if (t < SLOW_PHASE_DURATION && !isMuted) {
             if (introAudioRef.current.paused) {
@@ -2033,7 +2033,7 @@ export const Scene: React.FC<SceneProps> = ({
         }
 
         if (t < SLOW_PHASE_DURATION) {
-          // Phase 1: First 2.5 seconds - VERY SLOW zoom out (Video + Audio)
+          // Phase 1: First 4.0 seconds - VERY SLOW zoom out (Video + Audio)
           const p = t / SLOW_PHASE_DURATION;
           const ease = 1 - Math.pow(1 - p, 2); // gentle quad ease
           camera.position.lerpVectors(INTRO_START_POS, SLOW_DRIFT_POS, ease);
