@@ -1164,18 +1164,29 @@ export const Scene: React.FC<SceneProps> = ({
     video.crossOrigin = "anonymous";
     video.loop = true;
     video.playsInline = true;
+    video.setAttribute("playsinline", "true");
+    video.setAttribute("webkit-playsinline", "true");
     video.autoplay = true;
-    video.muted = isMuted;
-    video.volume = isMuted ? 0 : 1.0;
-
-    // Attempt unmuted play, fallback to muted if browser autoplay policy restricts it
-    video.play().catch(() => {
-      video.muted = true;
-      video.play().catch(() => {});
-    });
+    video.muted = true; // Required by browsers for guaranteed autoplay
+    video.defaultMuted = true;
+    video.preload = "auto";
     videoRef.current = video;
 
-    // Unmute on first user gesture if browser initially blocked unmuted autoplay
+    const startVideoPlayback = () => {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          video.muted = true;
+          video.play().catch(() => {});
+        });
+      }
+    };
+
+    video.addEventListener("canplay", startVideoPlayback, { once: true });
+    video.load();
+    startVideoPlayback();
+
+    // Enable sound on first user gesture during intro if not muted
     const enableAudioOnGesture = () => {
       if (videoRef.current && isIntroActiveRef.current && !isMuted) {
         videoRef.current.muted = false;
@@ -1186,6 +1197,7 @@ export const Scene: React.FC<SceneProps> = ({
     window.addEventListener("pointerdown", enableAudioOnGesture, { once: true });
     window.addEventListener("keydown", enableAudioOnGesture, { once: true });
     window.addEventListener("touchstart", enableAudioOnGesture, { once: true });
+    window.addEventListener("click", enableAudioOnGesture, { once: true });
 
     const videoTex = new THREE.VideoTexture(video);
     videoTex.colorSpace = THREE.SRGBColorSpace;
@@ -1987,7 +1999,6 @@ export const Scene: React.FC<SceneProps> = ({
         if (videoRef.current && !isMuted) {
           if (t < SLOW_PHASE_DURATION) {
             videoRef.current.volume = 1.0;
-            videoRef.current.muted = false;
           } else if (t <= TOTAL_DURATION) {
             const fadeProgress = (t - SLOW_PHASE_DURATION) / FULL_ZOOM_DURATION;
             const vol = Math.max(0, Math.min(1, 1.0 - fadeProgress));
