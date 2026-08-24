@@ -185,9 +185,18 @@ export const Scene: React.FC<SceneProps> = ({
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Mute / Unmute SoundFX
+  // Mute / Unmute SoundFX and Video
   useEffect(() => {
     soundFX.setMuted(isMuted);
+    if (videoRef.current) {
+      if (isMuted) {
+        videoRef.current.muted = true;
+        videoRef.current.volume = 0;
+      } else if (isIntroActiveRef.current) {
+        videoRef.current.muted = false;
+        videoRef.current.volume = 1.0;
+      }
+    }
   }, [isMuted]);
 
   // Update Background Theme Color
@@ -208,6 +217,12 @@ export const Scene: React.FC<SceneProps> = ({
       isIntroActiveRef.current = true;
       introTimeRef.current = 0;
       soundFX.playWhoosh();
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        videoRef.current.muted = isMuted;
+        videoRef.current.volume = isMuted ? 0 : 1.0;
+        videoRef.current.play().catch(() => {});
+      }
     }
   }, [replayIntroTrigger]);
 
@@ -1148,11 +1163,29 @@ export const Scene: React.FC<SceneProps> = ({
     video.src = "/images/logo/short-reals.mp4";
     video.crossOrigin = "anonymous";
     video.loop = true;
-    video.muted = true;
     video.playsInline = true;
     video.autoplay = true;
-    video.play().catch(() => {});
+    video.muted = isMuted;
+    video.volume = isMuted ? 0 : 1.0;
+
+    // Attempt unmuted play, fallback to muted if browser autoplay policy restricts it
+    video.play().catch(() => {
+      video.muted = true;
+      video.play().catch(() => {});
+    });
     videoRef.current = video;
+
+    // Unmute on first user gesture if browser initially blocked unmuted autoplay
+    const enableAudioOnGesture = () => {
+      if (videoRef.current && isIntroActiveRef.current && !isMuted) {
+        videoRef.current.muted = false;
+        videoRef.current.volume = 1.0;
+        videoRef.current.play().catch(() => {});
+      }
+    };
+    window.addEventListener("pointerdown", enableAudioOnGesture, { once: true });
+    window.addEventListener("keydown", enableAudioOnGesture, { once: true });
+    window.addEventListener("touchstart", enableAudioOnGesture, { once: true });
 
     const videoTex = new THREE.VideoTexture(video);
     videoTex.colorSpace = THREE.SRGBColorSpace;
@@ -1950,6 +1983,21 @@ export const Scene: React.FC<SceneProps> = ({
         const FULL_ZOOM_DURATION = 2.8; // 2.8 seconds of full zoom out transition
         const TOTAL_DURATION = SLOW_PHASE_DURATION + FULL_ZOOM_DURATION;
 
+        // Video Audio Management: Play sound during first 2.5s -> Smooth Fade to Mute on Zoom Out
+        if (videoRef.current && !isMuted) {
+          if (t < SLOW_PHASE_DURATION) {
+            videoRef.current.volume = 1.0;
+            videoRef.current.muted = false;
+          } else if (t <= TOTAL_DURATION) {
+            const fadeProgress = (t - SLOW_PHASE_DURATION) / FULL_ZOOM_DURATION;
+            const vol = Math.max(0, Math.min(1, 1.0 - fadeProgress));
+            videoRef.current.volume = vol;
+          } else {
+            videoRef.current.volume = 0;
+            videoRef.current.muted = true;
+          }
+        }
+
         if (t < SLOW_PHASE_DURATION) {
           // Phase 1: First 2.5 seconds - VERY SLOW zoom out
           const p = t / SLOW_PHASE_DURATION;
@@ -1963,8 +2011,12 @@ export const Scene: React.FC<SceneProps> = ({
           camera.position.lerpVectors(SLOW_DRIFT_POS, DEFAULT_CAM_POS, ease);
           controls.target.lerpVectors(SLOW_DRIFT_TARGET, DEFAULT_CAM_TARGET, ease);
         } else {
-          // Finished: Enable full user controls
+          // Finished: Enable full user controls & ensure video is muted
           isIntroActiveRef.current = false;
+          if (videoRef.current) {
+            videoRef.current.volume = 0;
+            videoRef.current.muted = true;
+          }
           camera.position.copy(DEFAULT_CAM_POS);
           controls.target.copy(DEFAULT_CAM_TARGET);
           controls.enableRotate = !isCtrlHeldRef.current && !isSpaceHeldRef.current;
