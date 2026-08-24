@@ -177,29 +177,8 @@ export default function Home() {
       {/* Tall Virtual Scroll Journey Track for 54 3D Stream (Exclusively controls 3D journey) */}
       <div
         ref={track3DRef}
-        className="relative z-10 pointer-events-none h-[1100vh] flex flex-col justify-between"
-      >
-        {/* Top Hint (Bengali) */}
-        <div className="pt-24 flex justify-center">
-          <div className="bg-white/85 backdrop-blur-md px-5 py-2 rounded-full border border-white shadow-sm text-xs font-bold text-[#1e293b] uppercase tracking-wider flex items-center gap-2 animate-bounce">
-            <span>নিচে স্ক্রল করে ৫৪+ ৩ডি স্বাস্থ্য কার্ড, ভিডিও রিল ও শিশুর ছবি আবিষ্কার করুন ↓</span>
-          </div>
-        </div>
-
-        {/* Midpoint Scroll Indicators */}
-        <div className="flex flex-col items-center gap-3 text-center opacity-70">
-          <span className="text-xs font-bold text-white bg-slate-900/60 backdrop-blur-md px-4 py-1 rounded-full border border-white/20 tracking-wider">
-            ৩ডি উপাদান স্ক্রল সমাপ্তি: {Math.round(scrollProgress * 100)}%
-          </span>
-        </div>
-
-        {/* Bottom Journey Complete Hint */}
-        <div className="pb-16 flex justify-center">
-          <div className="bg-white/90 backdrop-blur-md px-5 py-2 rounded-full border border-white shadow-md text-xs font-bold text-[#15803d] tracking-wider flex items-center gap-2">
-            <span>🏆 ৫৪টি ৩ডি উপাদান সমাপ্ত • নিচে বিস্তারিত স্বাস্থ্য গাইড দেখুন ↓</span>
-          </div>
-        </div>
-      </div>
+        className="relative z-10 pointer-events-none h-[1100vh]"
+      />
 
       {/* Complete Bengali Newborn Health & Pediatrician Guide Sections */}
       <div className="relative z-10 pointer-events-auto bg-slate-900/95 text-white backdrop-blur-2xl border-t border-slate-700/60 shadow-2xl">
