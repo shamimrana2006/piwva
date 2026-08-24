@@ -25,7 +25,6 @@ interface SceneProps {
   zoomTrigger?: number;
   replayIntroTrigger?: number;
   isMuted?: boolean;
-  onVideoAudioBlocked?: (isBlocked: boolean) => void;
   onLayoutChange?: (
     layout: LayoutCoords,
     activeDraggedId?: string | null,
@@ -143,7 +142,6 @@ export const Scene: React.FC<SceneProps> = ({
   zoomTrigger,
   replayIntroTrigger,
   isMuted = false,
-  onVideoAudioBlocked,
   onLayoutChange,
   onCtrlChange,
   onSpaceChange,
@@ -1186,7 +1184,7 @@ export const Scene: React.FC<SceneProps> = ({
     video.load();
     startVideo();
 
-    // Independent Audio Track for the first 2.5 seconds
+    // Independent Audio Track for the first 4.0 seconds (Auto-plays on load)
     const introAudio = new Audio("/images/logo/short-reals.mp4");
     introAudio.preload = "auto";
     introAudio.volume = isMuted ? 0 : 1.0;
@@ -1195,31 +1193,25 @@ export const Scene: React.FC<SceneProps> = ({
     const playIntroAudio = () => {
       if (!isMuted && isIntroActiveRef.current) {
         introAudio.volume = 1.0;
-        const p = introAudio.play();
-        if (p !== undefined) {
-          p.then(() => {
-            onVideoAudioBlocked?.(false);
-          }).catch(() => {
-            onVideoAudioBlocked?.(true);
-          });
-        }
+        introAudio.play().catch(() => {});
       }
     };
     introAudio.addEventListener("canplaythrough", playIntroAudio, { once: true });
     playIntroAudio();
 
-    // Enable sound on first user gesture if browser blocked initial autoplay audio
-    const enableAudioOnGesture = () => {
+    // Seamless auto-unlock on natural mouse move, hover, scroll or touch
+    const autoUnlockAudio = () => {
       if (introAudioRef.current && isIntroActiveRef.current && !isMuted) {
         introAudioRef.current.volume = 1.0;
         introAudioRef.current.play().catch(() => {});
-        onVideoAudioBlocked?.(false);
       }
     };
-    window.addEventListener("pointerdown", enableAudioOnGesture);
-    window.addEventListener("keydown", enableAudioOnGesture);
-    window.addEventListener("touchstart", enableAudioOnGesture);
-    window.addEventListener("click", enableAudioOnGesture);
+    window.addEventListener("pointermove", autoUnlockAudio, { once: true });
+    window.addEventListener("mousemove", autoUnlockAudio, { once: true });
+    window.addEventListener("wheel", autoUnlockAudio, { once: true, passive: true });
+    window.addEventListener("scroll", autoUnlockAudio, { once: true, passive: true });
+    window.addEventListener("touchstart", autoUnlockAudio, { once: true });
+    window.addEventListener("pointerdown", autoUnlockAudio, { once: true });
 
     const videoTex = new THREE.VideoTexture(video);
     videoTex.colorSpace = THREE.SRGBColorSpace;
