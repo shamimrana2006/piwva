@@ -25,6 +25,7 @@ interface SceneProps {
   zoomTrigger?: number;
   replayIntroTrigger?: number;
   isMuted?: boolean;
+  scrollProgress?: number;
   onLayoutChange?: (
     layout: LayoutCoords,
     activeDraggedId?: string | null,
@@ -142,6 +143,7 @@ export const Scene: React.FC<SceneProps> = ({
   zoomTrigger,
   replayIntroTrigger,
   isMuted = false,
+  scrollProgress,
   onLayoutChange,
   onCtrlChange,
   onSpaceChange,
@@ -154,6 +156,10 @@ export const Scene: React.FC<SceneProps> = ({
   const isSpaceHeldRef = useRef(false);
   const isPanningArtboardRef = useRef(false);
   const lastPointerPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  // Scroll Progress Prop Tracking
+  const scrollProgressPropRef = useRef(scrollProgress);
+  scrollProgressPropRef.current = scrollProgress;
 
   // Intro Animation Tracking
   const isIntroActiveRef = useRef(true);
@@ -2052,8 +2058,18 @@ export const Scene: React.FC<SceneProps> = ({
       }
 
       // Smooth Inertial Scroll Progress
-      currentScrollProgress += (targetScrollProgress - currentScrollProgress) * 0.08;
-      rootGroup.position.y = currentScrollProgress * 104.0;
+      const targetProgress = scrollProgressPropRef.current !== undefined
+        ? scrollProgressPropRef.current
+        : targetScrollProgress;
+
+      currentScrollProgress += (targetProgress - currentScrollProgress) * 0.08;
+
+      // 1. Smooth 3D Journey Y-displacement (Covers all 54 elements from 0 to -102)
+      rootGroup.position.y = currentScrollProgress * 106.0;
+
+      // 2. Incremental Scroll Artboard Zoom (Gradually zooms in closer from 1.0x to 1.30x as you scroll)
+      const scrollZoom = 1.0 + currentScrollProgress * 0.30;
+      rootGroup.scale.set(scrollZoom, scrollZoom, scrollZoom);
 
       // Twinkling Starfield & Cosmic Dust Animation
       starField.rotation.y += delta * 0.02;
