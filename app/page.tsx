@@ -3,29 +3,18 @@
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { HUDControls } from "@/components/HUDControls";
+import {
+  LayoutInspectorModal,
+  LayoutCoords,
+  CameraState,
+} from "@/components/LayoutInspectorModal";
+import { Logo3DElement } from "@/components/Logo3DElement";
 import { TextColorTheme } from "@/components/create3DText";
-import { LayoutInspectorModal, LayoutCoords, CameraState } from "@/components/LayoutInspectorModal";
 import { NewbornHealthGuideSections } from "@/components/NewbornHealthGuideSections";
 
-// Dynamic import of 3D Scene to prevent SSR Canvas hydration mismatch
+// Dynamic import for Scene to prevent SSR issues with Three.js
 const Scene = dynamic(
   () => import("@/components/Scene").then((mod) => mod.Scene),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-full h-full flex flex-col items-center justify-center bg-[#c5d5d3]">
-        <div className="w-12 h-12 rounded-2xl border-4 border-[#a88b6b]/30 border-t-[#a88b6b] animate-spin mb-4" />
-        <p className="text-sm font-semibold tracking-wider text-[#4a5857] uppercase animate-pulse">
-          Loading 3D Canvas...
-        </p>
-      </div>
-    ),
-  }
-);
-
-// Dynamic import of 3D Logo Element Showcase Modal
-const Logo3DElement = dynamic(
-  () => import("@/components/Logo3DElement").then((mod) => mod.Logo3DElement),
   {
     ssr: false,
     loading: () => (
@@ -40,9 +29,12 @@ export default function Home() {
   const [isAutoRotate, setIsAutoRotate] = useState<boolean>(false);
   const [isScattered, setIsScattered] = useState<boolean>(false);
   const [lightingTheme, setLightingTheme] = useState<"studio" | "warm" | "cool">("studio");
+  const [bgTheme, setBgTheme] = useState<"dark-starry" | "light-soft" | "warm-nebula">("dark-starry");
   const [textColorTheme, setTextColorTheme] = useState<TextColorTheme>("gold");
   const [resetTrigger, setResetTrigger] = useState<number>(0);
   const [zoomTrigger, setZoomTrigger] = useState<number>(0);
+  const [replayIntroTrigger, setReplayIntroTrigger] = useState<number>(0);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isLogoModalOpen, setIsLogoModalOpen] = useState<boolean>(false);
   const [isInspectorOpen, setIsInspectorOpen] = useState<boolean>(false);
   const [isCtrlHeld, setIsCtrlHeld] = useState<boolean>(false);
@@ -63,6 +55,10 @@ export default function Home() {
 
   const handleZoomOut = () => {
     setZoomTrigger((prev) => (prev >= 0 ? -1 : prev - 1));
+  };
+
+  const handleReplayIntro = () => {
+    setReplayIntroTrigger((prev) => prev + 1);
   };
 
   const handleLayoutChange = (
@@ -92,29 +88,29 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Determine current 3D Stage name based on scroll depth (7 distinct stages in Bengali/English)
+  // Determine current 3D Stage name based on scroll depth (7 distinct stages in Bengali)
   const getStageInfo = () => {
     if (scrollProgress < 0.12) {
-      return { stage: "Stage 0", title: "🌿 নার্সারি ও ব্র্যান্ড রিল", color: "bg-emerald-100 text-emerald-800 border-emerald-300" };
+      return { stage: "পর্ব ০", title: "🌿 নার্সারি ও ব্র্যান্ড ভিডিও রিল", color: "bg-emerald-100/90 text-emerald-800 border-emerald-300" };
     } else if (scrollProgress < 0.26) {
-      return { stage: "Stage 1", title: "🌙 নিরাপদ ঘুম ও সিডস প্রতিরোধ", color: "bg-blue-100 text-blue-800 border-blue-300" };
+      return { stage: "পর্ব ১", title: "🌙 নিরাপদ ঘুম ও সিডস প্রতিরোধ", color: "bg-blue-100/90 text-blue-800 border-blue-300" };
     } else if (scrollProgress < 0.42) {
-      return { stage: "Stage 2", title: "🧸 টামি টাইম ও শারীরিক মোটর বিকাশ", color: "bg-amber-100 text-amber-800 border-amber-300" };
+      return { stage: "পর্ব ২", title: "🧸 টামি টাইম ও শারীরিক মোটর বিকাশ", color: "bg-amber-100/90 text-amber-800 border-amber-300" };
     } else if (scrollProgress < 0.58) {
-      return { stage: "Stage 3", title: "🦷 টিথিং, মাড়ির যত্ন ও প্রথম উইনিং", color: "bg-purple-100 text-purple-800 border-purple-300" };
+      return { stage: "পর্ব ৩", title: "🦷 টিথিং, মাড়ির যত্ন ও প্রথম উইনিং", color: "bg-purple-100/90 text-purple-800 border-purple-300" };
     } else if (scrollProgress < 0.74) {
-      return { stage: "Stage 4", title: "❤️ ক্যাঙ্গারু কেয়ার ও কলিক উপশম", color: "bg-rose-100 text-rose-800 border-rose-300" };
+      return { stage: "পর্ব ৪", title: "❤️ ক্যাঙ্গারু কেয়ার ও কলিক উপশম", color: "bg-rose-100/90 text-rose-800 border-rose-300" };
     } else if (scrollProgress < 0.88) {
-      return { stage: "Stage 5", title: "🚨 জরুরি স্বাস্থ্য সতর্কতা লক্ষণ", color: "bg-red-100 text-red-800 border-red-300" };
+      return { stage: "পর্ব ৫", title: "🚨 জরুরি স্বাস্থ্য সতর্কতা লক্ষণ", color: "bg-red-100/90 text-red-800 border-red-300" };
     } else {
-      return { stage: "Stage 6", title: "🏆 এফএসসি সার্টিফাইড ও দৈনিক রুটিন", color: "bg-teal-100 text-teal-800 border-teal-300" };
+      return { stage: "পর্ব ৬", title: "🏆 এফএসসি সার্টিফাইড ও দৈনিক রুটিন", color: "bg-teal-100/90 text-teal-800 border-teal-300" };
     }
   };
 
   const currentStage = getStageInfo();
 
   return (
-    <main className="relative min-h-screen w-full bg-[#c5d5d3] overflow-x-hidden selection:bg-[#dfb782]/30">
+    <main className={`relative min-h-screen w-full ${bgTheme === "dark-starry" ? "bg-[#0c1517]" : bgTheme === "warm-nebula" ? "bg-[#181412]" : "bg-[#c5d5d3]"} overflow-x-hidden selection:bg-[#dfb782]/30 transition-colors duration-500`}>
       {/* Top Scroll Progress Line */}
       <div
         className="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-[#dfb782] via-[#15803d] to-[#38bdf8] z-50 transition-all duration-150"
@@ -127,9 +123,12 @@ export default function Home() {
           isAutoRotate={isAutoRotate}
           isScattered={isScattered}
           lightingTheme={lightingTheme}
+          bgTheme={bgTheme}
           textColorTheme={textColorTheme}
           resetTrigger={resetTrigger}
           zoomTrigger={zoomTrigger}
+          replayIntroTrigger={replayIntroTrigger}
+          isMuted={isMuted}
           onLayoutChange={handleLayoutChange}
           onCtrlChange={setIsCtrlHeld}
           onSpaceChange={setIsSpaceHeld}
@@ -152,35 +151,65 @@ export default function Home() {
         setIsScattered={setIsScattered}
         lightingTheme={lightingTheme}
         setLightingTheme={setLightingTheme}
+        bgTheme={bgTheme}
+        setBgTheme={setBgTheme}
         textColorTheme={textColorTheme}
         setTextColorTheme={setTextColorTheme}
         onReset={handleReset}
         onOpenLogoModal={() => setIsLogoModalOpen(true)}
         onOpenInspector={() => setIsInspectorOpen((prev) => !prev)}
+        onReplayIntro={handleReplayIntro}
         isCtrlHeld={isCtrlHeld}
         isSpaceHeld={isSpaceHeld}
+        isMuted={isMuted}
+        setIsMuted={setIsMuted}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
       />
 
-      {/* Tall Virtual Scroll Journey Track for 50+ 3D Stream */}
+      {/* Tall Virtual Scroll Journey Track for 54 3D Stream */}
       <div className="relative z-10 pointer-events-none h-[900vh] flex flex-col justify-between">
-        {/* Top Hint */}
+        {/* Top Hint (Bengali) */}
         <div className="pt-24 flex justify-center">
-          <div className="bg-white/80 backdrop-blur-md px-5 py-2 rounded-full border border-white shadow-sm text-xs font-bold text-[#2d3748] uppercase tracking-wider flex items-center gap-2 animate-bounce">
-            <span>Scroll down to explore 50+ 3D newborn health cards, video reels & baby photos ↓</span>
+          <div className="bg-white/85 backdrop-blur-md px-5 py-2 rounded-full border border-white shadow-sm text-xs font-bold text-[#1e293b] uppercase tracking-wider flex items-center gap-2 animate-bounce">
+            <span>নিচে স্ক্রল করে ৫৪+ ৩ডি স্বাস্থ্য কার্ড, ভিডিও রিল ও শিশুর ছবি আবিষ্কার করুন ↓</span>
           </div>
         </div>
 
         {/* Midpoint Scroll Indicators */}
-        <div className="flex flex-col items-center gap-3 text-center opacity-60">
-          <span className="text-xs font-bold text-[#2d3748] tracking-widest uppercase">
-            3D Continuous Journey ({Math.round(scrollProgress * 100)}%)
+        <div className="flex flex-col items-center gap-3 text-center opacity-70">
+          <span className="text-xs font-bold text-white bg-slate-900/60 backdrop-blur-md px-4 py-1 rounded-full border border-white/20 tracking-wider">
+            ৩ডি স্বাস্থ্য যাত্রা সম্পন্ন: {Math.round(scrollProgress * 100)}%
           </span>
+        </div>
+
+        {/* Bottom Journey Complete Hint */}
+        <div className="pb-16 flex justify-center">
+          <div className="bg-white/90 backdrop-blur-md px-5 py-2 rounded-full border border-white shadow-md text-xs font-bold text-[#15803d] tracking-wider flex items-center gap-2">
+            <span>🏆 স্বাস্থ্য নির্দেশিকা সমাপ্ত • উপরে স্ক্রল করে পুনরায় দেখুন ↑</span>
+          </div>
         </div>
       </div>
 
-      {/* 3D Layout Positions & Camera Zoom Inspector Popup */}
+      {/* Complete Bengali Newborn Health & Pediatrician Guide Sections */}
+      <div className="relative z-10 pointer-events-auto bg-slate-900/90 text-white backdrop-blur-xl border-t border-slate-700/60">
+        <NewbornHealthGuideSections />
+      </div>
+
+      {/* 3D Logo Showcase Modal Dialog */}
+      {isLogoModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-4xl h-[650px] bg-gradient-to-b from-slate-900 via-[#162220] to-slate-950 rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+            <Logo3DElement
+              initialPreset="gold"
+              isModal={true}
+              onClose={() => setIsLogoModalOpen(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* 3D Layout Coordinates & Camera Inspector Modal */}
       <LayoutInspectorModal
         isOpen={isInspectorOpen}
         onClose={() => setIsInspectorOpen(false)}
@@ -189,25 +218,6 @@ export default function Home() {
         isCtrlHeld={isCtrlHeld}
         activeDraggedId={activeDraggedId}
       />
-
-      {/* 3D Logo Showcase Modal / Closeup Inspector */}
-      {isLogoModalOpen && (
-        <div
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setIsLogoModalOpen(false);
-          }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/45 backdrop-blur-md transition-opacity duration-300"
-        >
-          <div className="relative w-full max-w-4xl h-[600px] max-h-[88vh] rounded-3xl bg-[#c5d5d3]/95 border border-white/70 shadow-2xl overflow-hidden flex flex-col">
-            <Logo3DElement onClose={() => setIsLogoModalOpen(false)} isModal={true} />
-          </div>
-        </div>
-      )}
-
-      {/* Detailed Newborn Baby Health Guide Chapters & Clinical Articles at Page End */}
-      <div className="relative z-20">
-        <NewbornHealthGuideSections />
-      </div>
     </main>
   );
 }

@@ -13,14 +13,18 @@ import {
   TEXT_COLOR_THEMES,
 } from "./create3DText";
 import { LayoutCoords, CameraState } from "./LayoutInspectorModal";
+import { soundFX } from "../utils/soundEffects";
 
 interface SceneProps {
   isAutoRotate: boolean;
   isScattered: boolean;
   lightingTheme: "studio" | "warm" | "cool";
+  bgTheme?: "dark-starry" | "light-soft" | "warm-nebula";
   textColorTheme?: TextColorTheme;
   resetTrigger: number;
   zoomTrigger?: number;
+  replayIntroTrigger?: number;
+  isMuted?: boolean;
   onLayoutChange?: (
     layout: LayoutCoords,
     activeDraggedId?: string | null,
@@ -132,9 +136,12 @@ export const Scene: React.FC<SceneProps> = ({
   isAutoRotate,
   isScattered,
   lightingTheme,
+  bgTheme = "dark-starry",
   textColorTheme = "gold",
   resetTrigger,
   zoomTrigger,
+  replayIntroTrigger,
+  isMuted = false,
   onLayoutChange,
   onCtrlChange,
   onSpaceChange,
@@ -148,11 +155,16 @@ export const Scene: React.FC<SceneProps> = ({
   const isPanningArtboardRef = useRef(false);
   const lastPointerPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
+  // Intro Animation Tracking
+  const isIntroActiveRef = useRef(true);
+  const introProgressRef = useRef(0);
+
   // Material refs
   const textFrontMatRef = useRef<THREE.MeshPhysicalMaterial | null>(null);
   const textSideMatRef = useRef<THREE.MeshPhysicalMaterial | null>(null);
   const textRingMatRef = useRef<THREE.MeshPhysicalMaterial | null>(null);
   const particleMatRef = useRef<THREE.PointsMaterial | null>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
 
   // State refs
   const isAutoRotateRef = useRef(isAutoRotate);
@@ -172,6 +184,32 @@ export const Scene: React.FC<SceneProps> = ({
   const controlsRef = useRef<OrbitControls | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Mute / Unmute SoundFX
+  useEffect(() => {
+    soundFX.setMuted(isMuted);
+  }, [isMuted]);
+
+  // Update Background Theme Color
+  useEffect(() => {
+    if (!sceneRef.current) return;
+    if (bgTheme === "dark-starry") {
+      sceneRef.current.background = new THREE.Color("#0c1517");
+    } else if (bgTheme === "warm-nebula") {
+      sceneRef.current.background = new THREE.Color("#181412");
+    } else {
+      sceneRef.current.background = new THREE.Color("#c5d5d3");
+    }
+  }, [bgTheme]);
+
+  // Handle Replay Intro Animation Trigger
+  useEffect(() => {
+    if (replayIntroTrigger !== undefined && replayIntroTrigger > 0) {
+      isIntroActiveRef.current = true;
+      introProgressRef.current = 0;
+      soundFX.playWhoosh();
+    }
+  }, [replayIntroTrigger]);
 
   // Update 3D Text colors dynamically
   useEffect(() => {
@@ -209,6 +247,7 @@ export const Scene: React.FC<SceneProps> = ({
         obj.targetPos.copy(obj.basePos);
       }
     });
+    soundFX.playPop(440);
   }, [isScattered]);
 
   // Handle Zoom Trigger
@@ -224,6 +263,7 @@ export const Scene: React.FC<SceneProps> = ({
     dir.setLength(newDist);
     camera.position.copy(controls.target).add(dir);
     controls.update();
+    soundFX.playChime(660, 0.25);
   }, [zoomTrigger]);
 
   // Handle Reset Trigger
@@ -238,6 +278,7 @@ export const Scene: React.FC<SceneProps> = ({
         cameraRef.current.position.set(18.62, 9.99, 16.72);
         controlsRef.current.update();
       }
+      soundFX.playWhoosh();
     }
   }, [resetTrigger]);
 
@@ -272,13 +313,15 @@ export const Scene: React.FC<SceneProps> = ({
     if (!container) return;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#c5d5d3");
+    scene.background = new THREE.Color(bgTheme === "dark-starry" ? "#0c1517" : bgTheme === "warm-nebula" ? "#181412" : "#c5d5d3");
+    sceneRef.current = scene;
 
     const width = container.clientWidth || window.innerWidth;
     const height = container.clientHeight || window.innerHeight;
 
     const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 1000);
-    camera.position.set(18.62, 9.99, 16.72);
+    // START CAMERA POSITION: Zoomed In on the Animated Video Screen!
+    camera.position.set(-4.8, 3.8, 5.8);
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({
@@ -291,7 +334,7 @@ export const Scene: React.FC<SceneProps> = ({
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.18;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     container.appendChild(renderer.domElement);
@@ -302,12 +345,60 @@ export const Scene: React.FC<SceneProps> = ({
     controls.minDistance = 7;
     controls.maxDistance = 45;
     controls.maxPolarAngle = Math.PI / 2 + 0.15;
+    controls.target.set(-4.8, 3.8, 2.2); // Start looking directly at the zoomed video screen
     controls.enableRotate = true;
     controls.enablePan = true;
     controls.enableZoom = false; // Zoom via Ctrl + wheel
     controlsRef.current = controls;
 
-    // Lighting
+    // Start whoosh audio
+    setTimeout(() => soundFX.playWhoosh(), 200);
+
+    // =========================================================================
+    // ANIMATED 3D STARFIELD & COSMIC NEBULA DUST SYSTEM
+    // =========================================================================
+    const starGeo = new THREE.BufferGeometry();
+    const starCount = 1200;
+    const starPositions = new Float32Array(starCount * 3);
+
+    for (let i = 0; i < starCount; i++) {
+      starPositions[i * 3] = (Math.random() - 0.5) * 110;
+      starPositions[i * 3 + 1] = (Math.random() - 0.5) * 180;
+      starPositions[i * 3 + 2] = (Math.random() - 0.5) * 80 - 15;
+    }
+    starGeo.setAttribute("position", new THREE.BufferAttribute(starPositions, 3));
+
+    const starMat = new THREE.PointsMaterial({
+      color: 0xfef08a,
+      size: 0.3,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+    });
+    const starField = new THREE.Points(starGeo, starMat);
+    scene.add(starField);
+
+    // Floating Cosmic Dust Particles
+    const dustGeo = new THREE.BufferGeometry();
+    const dustCount = 350;
+    const dustPositions = new Float32Array(dustCount * 3);
+    for (let i = 0; i < dustCount; i++) {
+      dustPositions[i * 3] = (Math.random() - 0.5) * 60;
+      dustPositions[i * 3 + 1] = (Math.random() - 0.5) * 80;
+      dustPositions[i * 3 + 2] = (Math.random() - 0.5) * 40;
+    }
+    dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
+    const dustMat = new THREE.PointsMaterial({
+      color: 0xdfb782,
+      size: 0.18,
+      transparent: true,
+      opacity: 0.65,
+      blending: THREE.AdditiveBlending,
+    });
+    const dustParticles = new THREE.Points(dustGeo, dustMat);
+    scene.add(dustParticles);
+
+    // Studio Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
     scene.add(ambientLight);
     ambientLightRef.current = ambientLight;
@@ -331,7 +422,7 @@ export const Scene: React.FC<SceneProps> = ({
     scene.add(rimLight);
     rimLightRef.current = rimLight;
 
-    // Soft Contact Shadow
+    // Contact Shadow
     const shadowCanvas = document.createElement("canvas");
     shadowCanvas.width = 512;
     shadowCanvas.height = 512;
@@ -502,7 +593,7 @@ export const Scene: React.FC<SceneProps> = ({
     };
 
     // =========================================================================
-    // HELPER: 3D PHOTO CARD GENERATOR (WITH BENGALI TEXT SUPPORT)
+    // HELPER: 3D PHOTO CARD GENERATOR (WITH BENGALI TEXT)
     // =========================================================================
     const create3DPhotoCard = (
       imageSrc: string,
@@ -572,18 +663,15 @@ export const Scene: React.FC<SceneProps> = ({
         ctx.fillRect(pad, pad + 75, imgW, imgH);
         ctx.restore();
 
-        // Title in Bengali
         ctx.fillStyle = "#1e293b";
         ctx.font = `bold 44px ${BENGALI_FONT}`;
         ctx.textAlign = "left";
         ctx.fillText(titleBengali, pad + 10, pad + imgH + 145);
 
-        // Subtitle in Bengali
         ctx.fillStyle = "#64748b";
         ctx.font = `500 25px ${BENGALI_FONT}`;
         ctx.fillText(subTextBengali, pad + 10, pad + imgH + 195);
 
-        // Seal Tag
         ctx.fillStyle = "#15803d";
         ctx.font = `bold 22px ${BENGALI_FONT}`;
         ctx.fillText("✓ শিশু বিশেষজ্ঞদের সুপারিশকৃত • নিরাপদ মানদণ্ড", pad + 10, pad + imgH + 250);
@@ -605,7 +693,7 @@ export const Scene: React.FC<SceneProps> = ({
     };
 
     // =========================================================================
-    // HELPER: 3D HEALTH TIPS CARD GENERATOR (IN AUTHENTIC BENGALI)
+    // HELPER: 3D HEALTH TIPS CARD GENERATOR (BENGALI)
     // =========================================================================
     const create3DHealthCard = (
       titleBengali: string,
@@ -637,7 +725,6 @@ export const Scene: React.FC<SceneProps> = ({
         ctx.fillRect(0, 0, 1024, 980);
         const pad = 45;
 
-        // Header Category Pill
         ctx.fillStyle = accentBg;
         ctx.beginPath();
         ctx.roundRect(pad, pad, 420, 52, 26);
@@ -647,17 +734,14 @@ export const Scene: React.FC<SceneProps> = ({
         ctx.textAlign = "center";
         ctx.fillText(categoryBadgeBengali, pad + 210, pad + 35);
 
-        // Title
         ctx.fillStyle = "#1e293b";
         ctx.font = `bold 44px ${BENGALI_FONT}`;
         ctx.textAlign = "left";
         ctx.fillText(titleBengali, pad, pad + 120);
 
-        // Divider
         ctx.fillStyle = "#e2e8f0";
         ctx.fillRect(pad, pad + 155, 1024 - pad * 2, 3);
 
-        // Bengali Bullets
         const startY = pad + 215;
         bulletsBengali.forEach((b, idx) => {
           const y = startY + idx * 110;
@@ -686,7 +770,6 @@ export const Scene: React.FC<SceneProps> = ({
           }
         });
 
-        // Bottom Seal
         const botY = 890;
         ctx.fillStyle = "#f8fafc";
         ctx.beginPath();
@@ -713,7 +796,7 @@ export const Scene: React.FC<SceneProps> = ({
       return group;
     };
 
-    // Cylindrical Medallion (Bengali)
+    // Cylindrical Medallion
     const create3DCylinderMedallion = (icon: string, titleBengali: string, subtitleBengali: string, sub2Bengali: string, goldBorder = true, rad = 0.85) => {
       const group = new THREE.Group();
       const mesh = new THREE.Mesh(
@@ -861,17 +944,14 @@ export const Scene: React.FC<SceneProps> = ({
       sContext.fillStyle = "#f8f5f0";
       sContext.fillRect(0, 0, screenCanvas.width, screenCanvas.height);
 
-      // Status Bar
       sContext.fillStyle = "#2d3748";
       sContext.font = `bold 28px ${BENGALI_FONT}`;
       sContext.fillText("৯:৪১", 60, 60);
 
-      // App Header (Bengali)
       sContext.font = `bold 42px ${BENGALI_FONT}`;
       sContext.textAlign = "left";
       sContext.fillText("Piwva • শিশুর স্বাস্থ্য ও যত্ন", 60, 140);
 
-      // Banner
       const bX = 40, bY = 180, bW = 944, bH = 680;
       sContext.save();
       sContext.beginPath();
@@ -907,7 +987,6 @@ export const Scene: React.FC<SceneProps> = ({
       sContext.fillText("নিরাপদ ঘুম, টামি টাইম ও কলিক উপশমের সঠিক নিয়ম", bX + 40, bY + bH - 68);
       sContext.restore();
 
-      // Quick Bengali Pills
       const cats = ["😴 নিরাপদ ঘুম", "🍼 কলিক উপশম", "🌿 কোমল ত্বক", "🧸 টামি টাইম"];
       let cX = 40;
       cats.forEach((cat) => {
@@ -926,7 +1005,6 @@ export const Scene: React.FC<SceneProps> = ({
         cX += cW + 16;
       });
 
-      // 2 Cards in Bengali
       const drawTipCard = (x: number, y: number, w: number, h: number, icon: string, title: string, sub: string, bullets: string[], badge: string, bg: string, col: string) => {
         sContext.save();
         sContext.fillStyle = "#ffffff";
@@ -1065,7 +1143,7 @@ export const Scene: React.FC<SceneProps> = ({
     designedLogoGroup.add(logoJpgFace);
     registerDraggable(designedLogoGroup, [-0.2, -1.8, 3.8], baseTilt, [0, 1.0, 1.0], 1.4, 0.08, 0.03, "designed_logo_circle", "Piwva Designed Logo Medallion");
 
-    // 4. MP4 Video Screen
+    // 4. MP4 Video Screen (ZOOM HERO START ELEMENT)
     const video = document.createElement("video");
     video.src = "/images/logo/short-reals.mp4";
     video.crossOrigin = "anonymous";
@@ -1616,8 +1694,8 @@ export const Scene: React.FC<SceneProps> = ({
       if (isCtrlHeldRef.current !== held) {
         isCtrlHeldRef.current = held;
         onCtrlChange?.(held);
-        controls.enableRotate = !held && !isSpaceHeldRef.current;
-        controls.enablePan = !held && !isSpaceHeldRef.current;
+        controls.enableRotate = !held && !isSpaceHeldRef.current && !isIntroActiveRef.current;
+        controls.enablePan = !held && !isSpaceHeldRef.current && !isIntroActiveRef.current;
         if (!held && !isDraggingAny.current && !isSpaceHeldRef.current) {
           renderer.domElement.style.cursor = "default";
           draggableObjects.current.forEach((d) => (d.isHovered = false));
@@ -1653,8 +1731,8 @@ export const Scene: React.FC<SceneProps> = ({
           isSpaceHeldRef.current = false;
           isPanningArtboardRef.current = false;
           onSpaceChange?.(false);
-          controls.enableRotate = !isCtrlHeldRef.current;
-          controls.enablePan = !isCtrlHeldRef.current;
+          controls.enableRotate = !isCtrlHeldRef.current && !isIntroActiveRef.current;
+          controls.enablePan = !isCtrlHeldRef.current && !isIntroActiveRef.current;
           renderer.domElement.style.cursor = isCtrlHeldRef.current ? "grab" : "default";
         }
       }
@@ -1687,6 +1765,7 @@ export const Scene: React.FC<SceneProps> = ({
         isPanningArtboardRef.current = true;
         lastPointerPos.current = { x: pos.clientX, y: pos.clientY };
         renderer.domElement.style.cursor = "grabbing";
+        soundFX.playPop(580);
         return;
       }
 
@@ -1714,6 +1793,7 @@ export const Scene: React.FC<SceneProps> = ({
           }
 
           renderer.domElement.style.cursor = "grabbing";
+          soundFX.playPop(620);
           emitLayout(targetData.id);
         }
       }
@@ -1765,6 +1845,9 @@ export const Scene: React.FC<SceneProps> = ({
         if (intersects.length > 0) {
           const targetData = findTargetData(intersects[0].object);
           if (targetData) {
+            if (!targetData.isHovered) {
+              soundFX.playChime(780, 0.2);
+            }
             renderer.domElement.style.cursor = "grab";
             draggableObjects.current.forEach((d) => (d.isHovered = d === targetData));
           } else {
@@ -1785,12 +1868,14 @@ export const Scene: React.FC<SceneProps> = ({
       if (isPanningArtboardRef.current) {
         isPanningArtboardRef.current = false;
         renderer.domElement.style.cursor = isSpaceHeldRef.current ? "grab" : "default";
+        soundFX.playPop(480);
       }
 
       if (activeDragged.current) {
         emitLayout(null);
         activeDragged.current = null;
         isDraggingAny.current = false;
+        soundFX.playPop(520);
         const isCtrl = "ctrlKey" in e ? e.ctrlKey || e.metaKey || isCtrlHeldRef.current : isCtrlHeldRef.current;
         renderer.domElement.style.cursor = isCtrl ? "grab" : isSpaceHeldRef.current ? "grab" : "default";
       }
@@ -1808,6 +1893,7 @@ export const Scene: React.FC<SceneProps> = ({
         camera.position.copy(controls.target).add(offset);
         controls.update();
         emitLayout(activeDragged.current?.id || null);
+        soundFX.playChime(e.deltaY > 0 ? 520 : 740, 0.2);
       }
     };
 
@@ -1833,6 +1919,15 @@ export const Scene: React.FC<SceneProps> = ({
     window.addEventListener("scroll", onWindowScroll, { passive: true });
     onWindowScroll();
 
+    // =========================================================================
+    // CINEMATIC INTRO ZOOM-OUT ANIMATION TARGETS
+    // =========================================================================
+    const INTRO_START_POS = new THREE.Vector3(-4.8, 3.8, 5.8);
+    const INTRO_START_TARGET = new THREE.Vector3(-4.8, 3.8, 2.2);
+
+    const DEFAULT_CAM_POS = new THREE.Vector3(18.62, 9.99, 16.72);
+    const DEFAULT_CAM_TARGET = new THREE.Vector3(0, 0, 0);
+
     // Render & Animation Loop
     let animId: number;
     const clock = new THREE.Clock();
@@ -1842,21 +1937,44 @@ export const Scene: React.FC<SceneProps> = ({
       const delta = clock.getDelta();
       const time = clock.getElapsedTime();
 
-      // Smooth Inertial Scroll
+      // 1. Cinematic Intro Camera Zoom-out Animation
+      if (isIntroActiveRef.current) {
+        introProgressRef.current += delta / 2.8; // 2.8s smooth duration
+        if (introProgressRef.current >= 1) {
+          introProgressRef.current = 1;
+          isIntroActiveRef.current = false;
+          controls.enableRotate = !isCtrlHeldRef.current && !isSpaceHeldRef.current;
+          controls.enablePan = !isCtrlHeldRef.current && !isSpaceHeldRef.current;
+        }
+        const ease = 1 - Math.pow(1 - introProgressRef.current, 3); // Cubic ease out
+        camera.position.lerpVectors(INTRO_START_POS, DEFAULT_CAM_POS, ease);
+        controls.target.lerpVectors(INTRO_START_TARGET, DEFAULT_CAM_TARGET, ease);
+        controls.update();
+      }
+
+      // Smooth Inertial Scroll Progress
       currentScrollProgress += (targetScrollProgress - currentScrollProgress) * 0.08;
       rootGroup.position.y = currentScrollProgress * 104.0;
 
-      controls.enableRotate = !isCtrlHeldRef.current && !isSpaceHeldRef.current;
-      controls.enablePan = !isCtrlHeldRef.current && !isSpaceHeldRef.current;
-      controls.update();
+      // Twinkling Starfield & Cosmic Dust Animation
+      starField.rotation.y += delta * 0.02;
+      starField.rotation.x = Math.sin(time * 0.2) * 0.05;
+      dustParticles.rotation.y -= delta * 0.03;
+      dustParticles.position.y = Math.sin(time * 0.5) * 0.6;
 
-      if (isAutoRotateRef.current) {
-        rootGroup.rotation.y += delta * 0.25;
-      } else if (!isCtrlHeldRef.current && !isSpaceHeldRef.current) {
-        const targetRotY = (mouse.x * Math.PI) / 24;
-        const targetRotX = (-mouse.y * Math.PI) / 28;
-        rootGroup.rotation.y = THREE.MathUtils.lerp(rootGroup.rotation.y, targetRotY, delta * 3);
-        rootGroup.rotation.x = THREE.MathUtils.lerp(rootGroup.rotation.x, targetRotX, delta * 3);
+      if (!isIntroActiveRef.current) {
+        controls.enableRotate = !isCtrlHeldRef.current && !isSpaceHeldRef.current;
+        controls.enablePan = !isCtrlHeldRef.current && !isSpaceHeldRef.current;
+        controls.update();
+
+        if (isAutoRotateRef.current) {
+          rootGroup.rotation.y += delta * 0.25;
+        } else if (!isCtrlHeldRef.current && !isSpaceHeldRef.current) {
+          const targetRotY = (mouse.x * Math.PI) / 24;
+          const targetRotX = (-mouse.y * Math.PI) / 28;
+          rootGroup.rotation.y = THREE.MathUtils.lerp(rootGroup.rotation.y, targetRotY, delta * 3);
+          rootGroup.rotation.x = THREE.MathUtils.lerp(rootGroup.rotation.x, targetRotX, delta * 3);
+        }
       }
 
       draggableObjects.current.forEach((obj) => {

@@ -304,7 +304,7 @@ export const Logo3DElement: React.FC<Logo3DElementProps> = ({
         <div className="pointer-events-auto flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/60 shadow-lg">
           <Type className="w-4 h-4 text-amber-500 animate-pulse" />
           <span className="text-xs font-bold text-slate-800 dark:text-slate-100 tracking-wide uppercase">
-            Separate 3D "Piwva" Letters
+            স্বতন্ত্র ৩ডি "Piwva" টাইপোগ্রাফি
           </span>
         </div>
 
@@ -312,7 +312,7 @@ export const Logo3DElement: React.FC<Logo3DElementProps> = ({
           <button
             onClick={onClose}
             className="pointer-events-auto p-2 rounded-xl bg-white/80 dark:bg-slate-900/80 hover:bg-white text-slate-700 dark:text-slate-200 backdrop-blur-md border border-white/60 shadow-lg transition-all hover:scale-105"
-            title="Close 3D Viewer"
+            title="লোগো ভিউয়ার বন্ধ করুন"
           >
             <X className="w-4 h-4" />
           </button>
@@ -331,7 +331,7 @@ export const Logo3DElement: React.FC<Logo3DElementProps> = ({
             }`}
           >
             <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-amber-600 to-yellow-300" />
-            <span>3D Gold</span>
+            <span>২৪কে স্বর্ণ</span>
           </button>
 
           <button
@@ -343,7 +343,7 @@ export const Logo3DElement: React.FC<Logo3DElementProps> = ({
             }`}
           >
             <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-slate-500 to-slate-200" />
-            <span>3D Chrome</span>
+            <span>লিকুইড ক্রোম</span>
           </button>
 
           <button
@@ -355,7 +355,7 @@ export const Logo3DElement: React.FC<Logo3DElementProps> = ({
             }`}
           >
             <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-rose-500 to-orange-200" />
-            <span>3D Rose Gold</span>
+            <span>রোজ গোল্ড</span>
           </button>
 
           <button
@@ -367,7 +367,7 @@ export const Logo3DElement: React.FC<Logo3DElementProps> = ({
             }`}
           >
             <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-black to-amber-500" />
-            <span>Obsidian Noir</span>
+            <span>অ্যাবসিডিয়ান ব্ল্যাক</span>
           </button>
 
           <div className="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1" />
@@ -379,14 +379,14 @@ export const Logo3DElement: React.FC<Logo3DElementProps> = ({
                 ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-400"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
-            title="Toggle 360 Auto-Spin"
+            title="৩৬০° অটো-স্পিন চালু / বন্ধ"
           >
             <RotateCw className={`w-3.5 h-3.5 ${isAutoSpin ? "animate-spin" : ""}`} />
           </button>
         </div>
 
         <p className="text-[11px] font-medium text-slate-600 dark:text-slate-300 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md px-3 py-0.5 rounded-full shadow-sm">
-          🖱 Drag to rotate in 3D • Scroll to zoom
+          🖱 ৩ডিতে ঘোরাতে ড্র্যাগ করুন • জুম করতে স্ক্রল করুন
         </p>
       </div>
     </div>

@@ -24,6 +24,7 @@ import {
   Stethoscope,
   Send,
 } from "lucide-react";
+import { soundFX } from "../utils/soundEffects";
 
 export const NewbornHealthGuideSections: React.FC = () => {
   const [activeTrimester, setActiveTrimester] = useState<number>(0);
@@ -39,119 +40,120 @@ export const NewbornHealthGuideSections: React.FC = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   const toggleCheck = (id: string) => {
+    soundFX.playPop(620);
     setChecklist((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const trimesters = [
     {
-      stage: "0–3 Months",
-      title: "The 4th Trimester: Safe Transition & Discovery",
-      subtitle: "Focus on physiological adaptation, safe sleep routines, and sensory calm.",
-      badge: "Stage 1 • Newborn",
+      stage: "০–৩ মাস",
+      title: "৪র্থ ট্রাইমেস্টার: নিরাপদ রূপান্তর ও প্রাথমিক আবিষ্কার",
+      subtitle: "শারীরিক অভিযোজন, নিরাপদ ঘুমের রুটিন এবং শান্ত সেন্সরি পরিবেশের ওপর গুরুত্ব দিন।",
+      badge: "পর্যায় ১ • নবজাতক",
       highlights: [
         {
-          title: "Safe Sleep Gold Standard",
-          desc: "Always sleep on back in a bare crib with a firm flat mattress. Keep room at 20–22°C (68–72°F).",
-          icon: <Moon className="w-5 h-5 text-indigo-600" />,
+          title: "নিরাপদ ঘুমের গোল্ডেন স্ট্যান্ডার্ড",
+          desc: "সবসময় শিশুকে চিত করে শক্ত ও সমতল তোষকে শোয়ান। রুমের তাপমাত্রা ২০–২২°C (৬৮–৭২°F) রাখুন।",
+          icon: <Moon className="w-5 h-5 text-indigo-400" />,
         },
         {
-          title: "Early Tummy Time",
-          desc: "Start with 2–3 minutes on parents' chest 2–3 times a day to build neck and shoulder muscles.",
-          icon: <Baby className="w-5 h-5 text-emerald-600" />,
+          title: "প্রাথমিক টামি টাইম অভ্যাস",
+          desc: "বাবা-মায়ের বুকের ওপর দিনে ২-৩ বার ২-৩ মিনিট দিয়ে শুরু করুন, যা ঘাড় ও মেরুদণ্ডের পেশি শক্ত করে।",
+          icon: <Baby className="w-5 h-5 text-emerald-400" />,
         },
         {
-          title: "High-Contrast Visuals",
-          desc: "Infants can only focus 8–12 inches away. High-contrast shapes and natural wood stimulate neural pathways.",
-          icon: <Sparkles className="w-5 h-5 text-amber-600" />,
+          title: "হাই-কনট্রাস্ট ভিজ্যুয়াল স্টিমুলেশন",
+          desc: "নবজাতক ৮-১২ ইঞ্চি দূরত্বের জিনিস স্পষ্টভাবে দেখতে পায়। সাদাকালো নকশা ও প্রাকৃতিক কাঠ মস্তিষ্কের স্নায়ু বিকাশ করে।",
+          icon: <Sparkles className="w-5 h-5 text-amber-400" />,
         },
         {
-          title: "Skin-to-Skin Kangaroo Care",
-          desc: "Regulates infant body temperature, stabilizes heart rate, and promotes healthy microbiome transfer.",
-          icon: <Heart className="w-5 h-5 text-rose-600" />,
+          title: "স্কিন-টু-স্কিন ক্যাঙ্গারু কেয়ার",
+          desc: "শরীরের তাপমাত্রা নিয়ন্ত্রণ করে, হৃদস্পন্দন শান্ত রাখে এবং মা-শিশুর সুস্থ মাইক্রোবায়োম গঠন করে।",
+          icon: <Heart className="w-5 h-5 text-rose-400" />,
         },
       ],
     },
     {
-      stage: "3–6 Months",
-      title: "Sensory Awakening & Motor Milestones",
-      subtitle: "Rolling over, grasping natural textures, and early oral discovery.",
-      badge: "Stage 2 • Infant",
+      stage: "৩–৬ মাস",
+      title: "ইন্দ্রিয়ানুভূতি জাগরণ ও শারীরিক মোটর বিকাশ",
+      subtitle: "কাত হওয়া, প্রাকৃতিক কাঠের স্পর্শ অনুভব করা এবং মুখের সাহায্যে পরিবেশ চেনা।",
+      badge: "পর্যায় ২ • শিশু",
       highlights: [
         {
-          title: "Rolling Safety & Swaddle Transition",
-          desc: "Transition out of tight swaddles with arms free as soon as baby shows signs of rolling over.",
-          icon: <Activity className="w-5 h-5 text-blue-600" />,
+          title: "সোয়াডল থেকে মুক্ত হওয়ার নিয়ম",
+          desc: "শিশু নিজে কাত বা উল্টানোর লক্ষণ দেখালেই সোয়াডল বন্ধ করে দুই হাত মুক্ত রাখুন।",
+          icon: <Activity className="w-5 h-5 text-blue-400" />,
         },
         {
-          title: "Natural Teething Comfort",
-          desc: "Salivation increases; offer chilled smooth natural beechwood and food-grade silicone rings.",
-          icon: <Smile className="w-5 h-5 text-amber-600" />,
+          title: "প্রাকৃতিক টিথিং ও মাড়ির আরাম",
+          desc: "লালা পড়ার পরিমাণ বাড়ে; ঠান্ডা মসৃণ বিচউড এবং ফুড-গ্রেড সিলিকন রিং চিবানোর সুযোগ দিন।",
+          icon: <Smile className="w-5 h-5 text-amber-400" />,
         },
         {
-          title: "Tummy Time Progression",
-          desc: "Build up to 15–20 minutes daily. Baby will begin pushing up on straight arms and pivoting.",
-          icon: <Baby className="w-5 h-5 text-emerald-600" />,
+          title: "টামি টাইমের উন্নতি",
+          desc: "ধীরে ধীরে দৈনিক ১৫-২০ মিনিট টামি টাইম করান। শিশু সোজা দুই হাতে ভর দিয়ে শরীর তুলতে শুরু করবে।",
+          icon: <Baby className="w-5 h-5 text-emerald-400" />,
         },
         {
-          title: "Two-Handed Object Exploration",
-          desc: "Introduce lightweight wooden rattles and sensory abacus beads to develop hand-eye coordination.",
-          icon: <Layers className="w-5 h-5 text-purple-600" />,
+          title: "দুই হাতে খেলনা ধরার দক্ষতা",
+          desc: "হালকা কাঠের র্যাটল ও রঙিন অ্যাবাকাস বিডস দিয়ে হাত ও চোখের নিখুঁত সমন্বয় গড়ে তুলুন।",
+          icon: <Layers className="w-5 h-5 text-purple-400" />,
         },
       ],
     },
     {
-      stage: "6–9 Months",
-      title: "Sitting, Solids & Cognitive Exploration",
-      subtitle: "Independent sitting, digestive milestones, and sensory motor coordination.",
-      badge: "Stage 3 • Explorer",
+      stage: "৬–৯ মাস",
+      title: "বসা, শক্ত খাবার শুরু ও মানসিক বুদ্ধিমত্তা",
+      subtitle: "নিজে নিজে সোজা হয়ে বসা, প্রথম পরিপাক খাদ্য ও সেন্সরি মোটর সমন্বয়।",
+      badge: "পর্যায় ৩ • এক্সপ্লোরার",
       highlights: [
         {
-          title: "Introduction to First Solids",
-          desc: "When baby sits upright with head control, introduce single-ingredient nutrient-dense purees or soft finger foods.",
-          icon: <Droplets className="w-5 h-5 text-amber-600" />,
+          title: "প্রথম শক্ত খাবার ও উইনিং গাইড",
+          desc: "মাথা শক্ত করে বসা শিখলে পুষ্টিকর ম্যাশ করা খাবার (মিষ্টি আলু, ডাল, কলা) এক এক করে দিন।",
+          icon: <Droplets className="w-5 h-5 text-amber-400" />,
         },
         {
-          title: "Object Permanence Play",
-          desc: "Play peek-a-boo and hiding toys under cloths to foster working memory and cognitive discovery.",
-          icon: <Sparkles className="w-5 h-5 text-indigo-600" />,
+          title: "অবজেক্ট পারমানেন্স ও লুকোচুরি খেলা",
+          desc: "কাপড়ের নিচে খেলনা লুকিয়ে খেলাধুলা শিশুর স্মৃতিশক্তি ও জ্ঞানীয় বিকাশকে উদ্দীপিত করে।",
+          icon: <Sparkles className="w-5 h-5 text-indigo-400" />,
         },
         {
-          title: "Independent Sitting & Balance",
-          desc: "Support floor playtime with surrounding soft cushions while baby practices upright balance.",
-          icon: <Award className="w-5 h-5 text-emerald-600" />,
+          title: "স্বাধীনভাবে বসা ও ভারসাম্য",
+          desc: "মেঝের নরম ম্যাটে চারপাশে কুশন দিয়ে বসিয়ে ভারসাম্য রক্ষার অনুশীলন করান।",
+          icon: <Award className="w-5 h-5 text-emerald-400" />,
         },
         {
-          title: "Active Teething Support",
-          desc: "Primary incisors emerge; keep gums clean with a soft silicone fingertip brush and cool wooden toys.",
-          icon: <ShieldCheck className="w-5 h-5 text-rose-600" />,
+          title: "দাঁত ও মুখের নিয়মিত যত্ন",
+          desc: "প্রথম দুধের দাঁত উঠলে নরম সিলিকন ফিঙ্গার ব্রাশ ও কুসুম গরম পানি দিয়ে মাড়ি পরিষ্কার করুন।",
+          icon: <ShieldCheck className="w-5 h-5 text-rose-400" />,
         },
       ],
     },
     {
-      stage: "9–12 Months",
-      title: "Mobility, Pincer Grasp & Independence",
-      subtitle: "Crawling, pulling to stand, fine motor precision, and established sleep hygiene.",
-      badge: "Stage 4 • Active Baby",
+      stage: "৯–১২ মাস",
+      title: "চলাচল, হাতের সূক্ষ্ম নিয়ন্ত্রণ ও আত্মবিশ্বাস",
+      subtitle: "হামাগুড়ি, দাঁড়িয়ে ওঠার চেষ্টা, আঙুলের সূক্ষ্ম গ্রিপ এবং সুনির্দিষ্ট ঘুমের রুটিন।",
+      badge: "পর্যায় ৪ • চঞ্চল শিশু",
       highlights: [
         {
-          title: "Non-Toxic Baby Proofing",
-          desc: "Ensure all reachable floor furniture and toys are 100% zero-VOC, BPA-free, and securely anchored.",
-          icon: <ShieldCheck className="w-5 h-5 text-emerald-600" />,
+          title: "টক্সিক উপাদান-মুক্ত বেবি প্রুফিং",
+          desc: "ঘরের নাগালের মধ্যে থাকা সব আসবাবপত্র ও খেলনা ১০০% বিপিএ-মুক্ত ও নিরাপদ বিচউডের রাখুন।",
+          icon: <ShieldCheck className="w-5 h-5 text-emerald-400" />,
         },
         {
-          title: "Pincer Grasp Mastery",
-          desc: "Practicing picking up small items and wooden sorting blocks refines dexterity and finger strength.",
-          icon: <Layers className="w-5 h-5 text-amber-600" />,
+          title: "পিন্সার গ্র্যাসপ দক্ষতা",
+          desc: "বুড়ো আঙুল ও তর্জনী দিয়ে ছোট কাঠের ব্লক তুলে সাজানোর খেলা আঙুলের শক্তি বাড়ায়।",
+          icon: <Layers className="w-5 h-5 text-amber-400" />,
         },
         {
-          title: "Circadian Rhythm Stability",
-          desc: "Establish a consistent 30-minute calming bedtime routine (bath, story, dim warm lighting).",
-          icon: <Moon className="w-5 h-5 text-indigo-600" />,
+          title: "সুনির্দিষ্ট ঘুমের রুটিন",
+          desc: "রাতে ঘুমের আগে ৩০ মিনিটের প্রশান্তিকর রুটিন (হালকা গোসল, গল্প বলা, ডিম লাইট) বজায় রাখুন।",
+          icon: <Moon className="w-5 h-5 text-indigo-400" />,
         },
         {
-          title: "Responsive Language & Song",
-          desc: "Narrate daily activities and sing repetitive rhymes to lay the foundation for first words.",
-          icon: <BookOpen className="w-5 h-5 text-blue-600" />,
+          title: "কথা বলা ও ছড়া শোনার অভ্যাস",
+          desc: "শিশুর সাথে প্রতিদিন কথা বলুন ও সুরেলা ছড়া আবৃত্তি করে প্রথম শব্দ উচ্চারণে সাহায্য করুন।",
+          icon: <BookOpen className="w-5 h-5 text-blue-400" />,
         },
       ],
     },
@@ -159,534 +161,362 @@ export const NewbornHealthGuideSections: React.FC = () => {
 
   const pillars = [
     {
-      title: "Safe Sleep & SIDS Prevention",
-      icon: <Moon className="w-6 h-6 text-indigo-600" />,
-      color: "bg-indigo-50 border-indigo-100",
-      badgeColor: "bg-indigo-100 text-indigo-800",
+      title: "নিরাপদ ঘুম ও সিডস (SIDS) প্রতিরোধ",
+      icon: <Moon className="w-6 h-6 text-indigo-400" />,
+      color: "bg-indigo-950/40 border-indigo-800/60",
+      badgeColor: "bg-indigo-900/60 text-indigo-300",
       dos: [
-        "Always place baby on their back to sleep.",
-        "Use a firm, flat, non-inclined crib mattress.",
-        "Keep nursery room temperature at 20–22°C (68–72°F).",
-        "Room share with parents for at least the first 6 months.",
+        "সবসময় শিশুকে চিত করে শুইয়ে দিন।",
+        "শক্ত, সমতল এবং আনতহীন তোষক ব্যবহার করুন।",
+        "নার্সারি রুমের তাপমাত্রা ২০–২২°C (৬৮–৭২°F) রাখুন।",
+        "প্রথম ৬ মাস মা-বাবার রুমেই শিশুকে নিজের খাটে রাখুন।",
       ],
       donts: [
-        "Never use soft pillows, loose blankets, or crib bumpers.",
-        "Do not over-bundle baby (check neck/chest for overheating).",
-        "Never let baby sleep on a couch, recliner, or adult bed.",
-        "Avoid weighted sleep sacks and positional wedges.",
+        "বিছানায় কখনো আলগা বালিশ, কম্বল বা বাম্পার রাখবেন না।",
+        "অতিরিক্ত গরম কাপড় পরাবেন না (বুক/ঘাড় চেক করুন)।",
+        "সোফা, রিক্লাইনার বা বড়দের বিছানায় একা ঘুম পাড়াবেন না।",
+        "ওজনযুক্ত স্লিপস্যাক বা পজিশনিং ওয়েজ ব্যবহার করবেন না।",
       ],
     },
     {
-      title: "Tummy Time & Motor Development",
-      icon: <Baby className="w-6 h-6 text-emerald-600" />,
-      color: "bg-emerald-50 border-emerald-100",
-      badgeColor: "bg-emerald-100 text-emerald-800",
+      title: "টামি টাইম ও শারীরিক মোটর বিকাশ",
+      icon: <Baby className="w-6 h-6 text-emerald-400" />,
+      color: "bg-emerald-950/40 border-emerald-800/60",
+      badgeColor: "bg-emerald-900/60 text-emerald-300",
       dos: [
-        "Start with 2–3 minutes on parent's chest from day one.",
-        "Practice on a clean, firm mat after diaper changes.",
-        "Place high-contrast wooden toys in direct visual line.",
-        "Gradually build to 15–20 minutes of daily tummy time.",
+        "প্রথম দিন থেকেই বুকের ওপর ২-৩ মিনিট টামি টাইম করান।",
+        "ডায়াপার বদলানোর পর পরিষ্কার সমতল ম্যাটে অভ্যাস করান।",
+        "দৃষ্টি আকর্ষণের জন্য সামনে হাই-কনট্রাস্ট কাঠের খেলনা রাখুন।",
+        "ধীরে ধীরে দিনে ১৫–২০ মিনিট টামি টাইমে অভ্যস্ত করুন।",
       ],
       donts: [
-        "Never leave baby unattended during tummy time.",
-        "Do not practice immediately after a heavy feeding.",
-        "Do not force tummy time if baby is overtired or crying.",
-        "Avoid overly soft pillows that restrict head movement.",
+        "টামি টাইমের সময় শিশুকে কখনো একা ফেলে যাবেন না।",
+        "দুধ খাওয়ানোর সাথে সাথে পেটের ওপর উপুড় করবেন না।",
+        "শিশু ক্লান্ত থাকলে বা কাঁদলে জোর করে টামি টাইম করাবেন না।",
+        "মাথা ঘোরানো বাধাগ্রস্ত করে এমন নরম বালিশ দেবেন না।",
       ],
     },
     {
-      title: "Gentle Newborn Skin & Nursery Air",
-      icon: <Droplets className="w-6 h-6 text-amber-600" />,
-      color: "bg-amber-50 border-amber-100",
-      badgeColor: "bg-amber-100 text-amber-800",
+      title: "কোমল ত্বকের যত্ন ও নার্সারির আবহাওয়া",
+      icon: <Droplets className="w-6 h-6 text-amber-400" />,
+      color: "bg-amber-950/40 border-amber-800/60",
+      badgeColor: "bg-amber-900/60 text-amber-300",
       dos: [
-        "Use 100% breathable organic cotton for clothes and bedding.",
-        "Maintain 45–55% nursery humidity for healthy airways.",
-        "Limit full baths to 2–3 times weekly in lukewarm water (37°C).",
-        "Choose zero-VOC, natural non-toxic wooden nursery furniture.",
+        "১০০% প্রাকৃতিক সুতি কাপড় ও মস্লিন ব্যবহার করুন।",
+        "ঘরের আর্দ্রতা ৪৫–৫৫% বজায় রাখুন যাতে শ্বাসনালী সতেজ থাকে।",
+        "সপ্তাহে ২–৩ দিন ৩৭°C কুসুম গরম পানিতে গোসল করান।",
+        "জিরো-ভিওসি ও রাসায়নিকমুক্ত প্রাকৃতিক বিচউড বেছে নিন।",
       ],
       donts: [
-        "Avoid chemical detergents with artificial fragrances and dyes.",
-        "Do not vigorously scrub sensitive newborn skin with loofahs.",
-        "Do not expose baby to harsh chemical air fresheners.",
-        "Avoid synthetic polyester fabrics that trap excess heat.",
+        "কৃত্রিম সুগন্ধি বা কড়া কেমিক্যালযুক্ত সাবান পরিহার করুন।",
+        "নবজাতকের সংবেদনশীল ত্বক খসখসে নেট দিয়ে ঘষবেন না।",
+        "রুমে সিন্থেটিক রুম ফ্রেশনার স্প্রে করবেন না।",
+        "সিন্থেটিক পলিয়েস্টার কাপড় ব্যবহার করবেন না।",
       ],
     },
     {
-      title: "Colic, Gas & Digestion Relief",
-      icon: <Activity className="w-6 h-6 text-rose-600" />,
-      color: "bg-rose-50 border-rose-100",
-      badgeColor: "bg-rose-100 text-rose-800",
+      title: "কলিক, পেটের গ্যাস ও পরিপাক স্বস্তি",
+      icon: <Activity className="w-6 h-6 text-rose-400" />,
+      color: "bg-rose-950/40 border-rose-800/60",
+      badgeColor: "bg-rose-900/60 text-rose-300",
       dos: [
-        "Gently bicycle baby's legs to release trapped intestinal gas.",
-        "Hold baby upright against your chest for 15 mins after feeding.",
-        "Perform clockwise circular tummy massages with gentle pressure.",
-        "Practice kangaroo skin-to-skin contact for emotional calming.",
+        "বাইসাইকেল লেগস মুভমেন্ট করিয়ে পেটের গ্যাস বের করুন।",
+        "দুধ খাওয়ানোর পর ১৫ মিনিট কাঁধে সোজা রেখে ঢেকুর তোলান।",
+        "ঘড়ির কাঁটার দিকে আলতো হাতে পেটে ম্যাসাজ করুন।",
+        "মানসিক প্রশান্তির জন্য ক্যাঙ্গারু কেয়ার (স্কিন-টু-স্কিন) দিন।",
       ],
       donts: [
-        "Do not rush feedings or leave bottle nipples half-filled with air.",
-        "Never lay baby flat on their back right after a full feed.",
-        "Do not give honey, herbal teas, or water before 6 months.",
-        "Avoid aggressive shaking or forceful bouncing movements.",
+        "খাওয়ানোর সময় তাড়াহুড়ো করবেন না বা বোতলে বাতাস রাখবেন না।",
+        "দুধ খাওয়ানোর পরপরই শিশুকে পুরোপুরি চিত করে শোয়াবেন না।",
+        "৬ মাসের আগে পানি, মধু বা ভেষজ চা দেবেন না।",
+        "শিশুকে জোর করে জোরে ঝাঁকাবেন না।",
       ],
     },
     {
-      title: "Safe Teething & Oral Milestones",
-      icon: <Smile className="w-6 h-6 text-orange-600" />,
-      color: "bg-orange-50 border-orange-100",
-      badgeColor: "bg-orange-100 text-orange-800",
+      title: "প্রাকৃতিক টিথিং ও মাড়ির যত্ন",
+      icon: <Smile className="w-6 h-6 text-orange-400" />,
+      color: "bg-orange-950/40 border-orange-800/60",
+      badgeColor: "bg-orange-900/60 text-orange-300",
       dos: [
-        "Offer chilled natural FSC beechwood or food-grade silicone rings.",
-        "Gently massage swollen gums with a clean, damp cotton gauze.",
-        "Keep chin and neck dry with soft organic bibs to prevent rash.",
-        "Begin brushing first primary teeth with a soft silicone brush.",
+        "ঠান্ডা মসৃণ বিচউড বা ফুড-গ্রেড সিলিকন টিথার দিন।",
+        "পরিষ্কার ভেজা সুতি কাপড় দিয়ে আলতো করে ফোলা মাড়ি মুছুন।",
+        "মুখে দেওয়ার সব খেলনা নিয়মিত হালকা গরম পানিতে ধুয়ে নিন।",
+        "প্রথম দাঁত ওঠার পর থেকে দুধ খাওয়ানোর পর মাড়ি পরিষ্কার রাখুন।",
       ],
       donts: [
-        "Never use numbing gels containing benzocaine or lidocaine.",
-        "Avoid amber necklaces (pose severe choking and strangulation risks).",
-        "Do not freeze teething toys rock-hard (can bruise gums).",
-        "Avoid plastic teething toys containing BPA, lead, or phthalates.",
+        "বেনজোকেন বা ক্ষতিকর অসাড়কারী টিথিং জেল দেবেন না।",
+        "টিথার ডিপ ফ্রিজে রেখে অতিরিক্ত শক্ত করে বরফ করবেন না।",
+        "গলায় টিথিং রিং ঝুলিয়ে ঘুম পাড়াবেন না।",
+        "ঘুমানোর সময় বোতলে মিষ্টি তরল দিয়ে রাখবেন না।",
       ],
     },
     {
-      title: "Sensory Balance & Sleep Hygiene",
-      icon: <Sun className="w-6 h-6 text-cyan-600" />,
-      color: "bg-cyan-50 border-cyan-100",
-      badgeColor: "bg-cyan-100 text-cyan-800",
+      title: "জরুরি স্বাস্থ্য সতর্কতা লক্ষণ (ক্লিনিক্যাল রেড ফ্ল্যাগ)",
+      icon: <AlertCircle className="w-6 h-6 text-red-400" />,
+      color: "bg-red-950/40 border-red-800/60",
+      badgeColor: "bg-red-900/60 text-red-300",
       dos: [
-        "Expose baby to natural daylight in the morning to set body clock.",
-        "Dim lights and lower noise 30 minutes before nighttime sleep.",
-        "Use low-pitch continuous white/pink noise at safe decibels (<50dB).",
-        "Maintain predictable, soothing bedtime steps every evening.",
+        "৩ মাসের কম শিশুর তাপমাত্রা ১০০.৪°F (৩৮°C) হলে দ্রুত ডাক্তার দেখান।",
+        "২৪ ঘণ্টায় শিশুর ভেজা ডায়াপারের সংখ্যা (কমপক্ষে ৬টি) গুনুন।",
+        "শান্ত থাকা অবস্থায় মিনিটে শ্বাসের গতি পর্যবেক্ষণ করুন।",
+        "জরুরি প্রয়োজনে শিশু বিশেষজ্ঞ বা হাসপাতালের শরণাপন্ন হন।",
       ],
       donts: [
-        "Avoid exposing infants to digital screens, tablets, and blue light.",
-        "Do not overstimulate baby when they show rubbing eyes / yawning cues.",
-        "Do not place white noise machines directly inside the infant's crib.",
-        "Avoid loud, chaotic environments right before scheduled nap times.",
+        "ডাক্তারের পরামর্শ ছাড়া কোনো অ্যান্টিবায়োটিক দেবেন না।",
+        "শ্বাসকষ্ট বা বুকের খাঁচা দেবে যাওয়ার লক্ষণ অবহেলা করবেন না।",
+        "শিশুর চোখ ও মুখ অতিরিক্ত শুষ্ক হয়ে গেলে দেরি করবেন না।",
+        "অতিরিক্ত নিস্তেজ ভাব ও খাবার না খাওয়ার লক্ষণ এড়িয়ে যাবেন না।",
       ],
-    },
-  ];
-
-  const warningSigns = [
-    {
-      title: "Fever in Infants (<3 Months)",
-      desc: "Any rectal temperature of 100.4°F (38.0°C) or higher in a baby under 3 months is a medical emergency requiring immediate pediatrician evaluation.",
-      icon: <Thermometer className="w-6 h-6 text-red-600" />,
-      tag: "Immediate Doctor Call",
-      tagColor: "bg-red-100 text-red-700",
-    },
-    {
-      title: "Respiratory Distress",
-      desc: "Fast breathing (>60 breaths per min), chest indrawing/retractions (skin sucking in around ribs), flaring nostrils, or grunting sounds during exhalation.",
-      icon: <Activity className="w-6 h-6 text-orange-600" />,
-      tag: "Urgent Assessment",
-      tagColor: "bg-orange-100 text-orange-700",
-    },
-    {
-      title: "Dehydration Indicators",
-      desc: "Fewer than 6 wet diapers in 24 hours (after day 5), sunken soft spot (fontanelle) on top of head, absence of tears when crying, dry lips/mouth.",
-      icon: <Droplets className="w-6 h-6 text-amber-600" />,
-      tag: "Hydration Check",
-      tagColor: "bg-amber-100 text-amber-700",
-    },
-    {
-      title: "Severe Lethargy or Inconsolability",
-      desc: "Baby is difficult to wake up, refuses to feed across multiple sessions, or exhibits continuous high-pitched inconsolable crying for hours.",
-      icon: <AlertCircle className="w-6 h-6 text-purple-600" />,
-      tag: "Clinical Evaluation",
-      tagColor: "bg-purple-100 text-purple-700",
-    },
-  ];
-
-  const dailySchedule = [
-    {
-      time: "07:00 AM",
-      title: "Gentle Morning Wake-up & First Feed",
-      desc: "Open nursery blinds for natural light. Diaper change, full feeding, and 15 mins upright cuddle.",
-      icon: "☀️",
-    },
-    {
-      time: "08:30 AM",
-      title: "Morning Tummy Time & High-Contrast Visuals",
-      desc: "3–5 mins of active floor tummy time with wooden rattle and high-contrast flashcards.",
-      icon: "🧸",
-    },
-    {
-      time: "09:30 AM",
-      title: "Morning Nap (Safe Sleep Protocol)",
-      desc: "Swaddle (or sleep sack), quiet nursery, white noise machine at 45dB, on back in bare crib.",
-      icon: "😴",
-    },
-    {
-      time: "11:30 AM",
-      title: "Midday Feeding & Gentle Baby Massage",
-      desc: "Second feed, followed by gentle clockwise tummy massage and bicycle leg movements for colic prevention.",
-      icon: "🌿",
-    },
-    {
-      time: "02:00 PM",
-      title: "Afternoon Fresh Air Stroll & Sensory Play",
-      desc: "Shaded outdoor stroller walk (weather permitting), tactile exploration of natural beechwood beads.",
-      icon: "🌳",
-    },
-    {
-      time: "06:30 PM",
-      title: "Evening Wind-Down & Lukewarm Bath",
-      desc: "Gentle 37°C water bath, organic cotton pat-down, dim warm lighting, bedtime story or lullaby.",
-      icon: "🌙",
     },
   ];
 
   return (
-    <div className="w-full bg-[#fbf9f5] text-[#2d3748] relative z-10">
-      {/* 1. CHAPTER: THE 4 TRIMESTERS ROADMAP */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-[#e2d9cd]">
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#e9dfd1] text-[#6b553e] text-xs font-bold uppercase tracking-widest mb-4">
-            <Calendar className="w-4 h-4 text-[#9c7f60]" />
-            Developmental Health Milestones
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#2d3748] tracking-tight font-serif">
-            The 4 Golden Trimesters of Infant Health
-          </h2>
-          <p className="mt-4 text-base sm:text-lg text-[#64748b]">
-            Evidence-based pediatric guidelines crafted to support your baby&apos;s physical, cognitive, and sensory well-being from newborn to 12 months.
-          </p>
+    <div className="w-full max-w-7xl mx-auto px-6 py-20 font-sans select-none">
+      {/* Section 1: Hero Header */}
+      <div className="text-center max-w-3xl mx-auto mb-20">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-bold uppercase tracking-wider mb-4">
+          <Stethoscope className="w-4 h-4 text-amber-400" />
+          <span>শিশু বিশেষজ্ঞ অনুমোদিত ক্লিনিক্যাল স্বাস্থ্য নির্দেশিকা</span>
+        </div>
+        <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight leading-tight mb-6">
+          নবজাতকের প্রথম বছরের <span className="text-[#dfb782]">বৈজ্ঞানিক স্বাস্থ্য ও যত্ন</span>
+        </h2>
+        <p className="text-slate-300 text-base md:text-lg leading-relaxed">
+          শিশুর নিরাপদ ঘুম, টামি টাইম, প্রাকৃতিক টিথিং, কলিক নিরাময় এবং সংবেদনশীল মোটর বিকাশের জন্য নির্ভরযোগ্য আন্তর্জাতিক মেডিকেল গাইডলাইন।
+        </p>
+      </div>
 
-          {/* Stage Selector Tabs */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-8 p-1.5 rounded-2xl bg-[#ede4d8] max-w-2xl mx-auto">
-            {trimesters.map((t, idx) => (
-              <button
-                key={idx}
-                onClick={() => setActiveTrimester(idx)}
-                className={`flex-1 min-w-[120px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
-                  activeTrimester === idx
-                    ? "bg-[#ffffff] text-[#2d3748] shadow-md scale-[1.02]"
-                    : "text-[#718096] hover:text-[#2d3748] hover:bg-white/40"
-                }`}
-              >
-                {t.stage}
-              </button>
-            ))}
-          </div>
+      {/* Section 2: Trimester Milestone Tabs */}
+      <div className="mb-24">
+        <div className="flex items-center justify-center gap-2 sm:gap-4 mb-8 overflow-x-auto pb-2">
+          {trimesters.map((t, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                soundFX.playPop(550 + idx * 80);
+                setActiveTrimester(idx);
+              }}
+              className={`px-5 py-3 rounded-2xl text-xs md:text-sm font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+                activeTrimester === idx
+                  ? "bg-[#dfb782] text-slate-950 shadow-lg shadow-[#dfb782]/20 scale-105 ring-2 ring-[#dfb782]"
+                  : "bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700"
+              }`}
+            >
+              <Calendar className="w-4 h-4" />
+              <span>{t.stage}</span>
+            </button>
+          ))}
         </div>
 
         {/* Active Trimester Card */}
-        <div className="rounded-3xl bg-white border border-[#e8ded1] shadow-xl p-6 sm:p-10 transition-all duration-300">
-          <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-8 border-b border-[#f1e9df] gap-4">
+        <div className="p-8 md:p-12 rounded-3xl bg-slate-800/60 border border-slate-700/80 shadow-xl backdrop-blur-md transition-all">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-700/60">
             <div>
-              <span className="inline-block px-3 py-1 rounded-full bg-[#f4ebe1] text-[#8c6d4f] text-xs font-bold uppercase tracking-wider mb-2">
+              <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
                 {trimesters[activeTrimester].badge}
               </span>
-              <h3 className="text-2xl sm:text-3xl font-bold text-[#2d3748] font-serif">
+              <h3 className="text-2xl md:text-3xl font-bold text-white mt-3">
                 {trimesters[activeTrimester].title}
               </h3>
-              <p className="text-[#64748b] mt-1 text-sm sm:text-base">
+              <p className="text-slate-400 text-sm md:text-base mt-1">
                 {trimesters[activeTrimester].subtitle}
               </p>
             </div>
-            <div className="flex items-center gap-2 text-sm font-semibold text-[#8c6d4f] bg-[#fbf7f2] px-4 py-2 rounded-xl border border-[#ebdccf] self-start md:self-auto">
-              <Stethoscope className="w-4 h-4 text-[#b88a4e]" />
-              Pediatric Verified
+            <div className="flex items-center gap-2 text-xs text-emerald-400 font-bold bg-emerald-950/60 px-4 py-2 rounded-xl border border-emerald-800/60">
+              <ShieldCheck className="w-4 h-4" />
+              <span>১০০% ক্লিনিক্যাল স্ট্যান্ডার্ড</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {trimesters[activeTrimester].highlights.map((h, i) => (
-              <div
-                key={i}
-                className="p-5 rounded-2xl bg-[#faf7f2] border border-[#eee5d8] hover:border-[#dfcaa7] hover:shadow-md transition-all duration-200 flex gap-4 items-start"
-              >
-                <div className="p-3 rounded-xl bg-white shadow-sm border border-[#e5dacf] shrink-0">
-                  {h.icon}
-                </div>
-                <div>
-                  <h4 className="font-bold text-base text-[#2d3748] mb-1">{h.title}</h4>
-                  <p className="text-sm text-[#5a6b7c] leading-relaxed">{h.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 2. CHAPTER: 6 PEDIATRIC HEALTH PILLARS (DOs & DONTs) */}
-      <section className="bg-[#f5efe6] py-20 border-t border-b border-[#e2d9cd]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#e8ded0] text-[#6b553e] text-xs font-bold uppercase tracking-widest mb-4">
-              <ShieldCheck className="w-4 h-4 text-[#9c7f60]" />
-              Daily Clinical Guidelines
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#2d3748] font-serif tracking-tight">
-              The 6 Cornerstones of Newborn Health
-            </h2>
-            <p className="mt-4 text-base sm:text-lg text-[#64748b]">
-              Clear, practical DOs and DON&apos;Ts recommended by pediatric specialists to safeguard your infant&apos;s daily routines.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {pillars.map((p, idx) => (
+            {trimesters[activeTrimester].highlights.map((h, idx) => (
               <div
                 key={idx}
-                className="rounded-3xl bg-white border border-[#e8ded1] shadow-lg overflow-hidden flex flex-col hover:-translate-y-1 transition-all duration-300"
+                className="p-6 rounded-2xl bg-slate-900/60 border border-slate-700/60 hover:border-[#dfb782]/60 transition-all group"
               >
-                <div className={`p-6 border-b border-[#f1e9df] flex items-center justify-between ${p.color}`}>
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 rounded-xl bg-white shadow-sm">{p.icon}</div>
-                    <h3 className="font-bold text-lg text-[#2d3748]">{p.title}</h3>
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="p-2 rounded-xl bg-slate-800 border border-slate-700 group-hover:scale-110 transition-transform">
+                    {h.icon}
                   </div>
-                </div>
-
-                <div className="p-6 space-y-6 flex-1 flex flex-col justify-between">
-                  {/* DOs */}
-                  <div>
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-700 mb-3">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                      Recommended (DOs)
-                    </div>
-                    <ul className="space-y-2 text-xs sm:text-sm text-[#4a5568]">
-                      {p.dos.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <span className="text-emerald-500 font-bold">•</span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* DONTs */}
-                  <div className="pt-4 border-t border-[#f4eee6]">
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-rose-700 mb-3">
-                      <XCircle className="w-4 h-4 text-rose-600" />
-                      Avoid (DON&apos;Ts)
-                    </div>
-                    <ul className="space-y-2 text-xs sm:text-sm text-[#4a5568]">
-                      {p.donts.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <span className="text-rose-500 font-bold">•</span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 3. CHAPTER: PEDIATRICIAN WARNING SIGNS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="rounded-3xl bg-[#263238] text-white p-8 sm:p-12 shadow-2xl relative overflow-hidden">
-          {/* Subtle background ambient ring */}
-          <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-
-          <div className="max-w-3xl mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 text-red-300 text-xs font-bold uppercase tracking-wider mb-4 border border-red-500/30">
-              <AlertCircle className="w-3.5 h-3.5 text-red-400" />
-              Emergency & Clinical Protocol
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white font-serif tracking-tight">
-              When to Contact Your Pediatrician
-            </h2>
-            <p className="mt-3 text-sm sm:text-base text-gray-300">
-              Trust your parental instinct. If your baby exhibits any of the following clinical warning signs, seek immediate medical guidance.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {warningSigns.map((w, idx) => (
-              <div
-                key={idx}
-                className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-200"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-2.5 rounded-xl bg-white/10">{w.icon}</div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${w.tagColor}`}>
-                    {w.tag}
-                  </span>
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">{w.title}</h3>
-                <p className="text-sm text-gray-300 leading-relaxed">{w.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 4. CHAPTER: DAILY NEWBORN CARE SCHEDULE & CHECKLIST */}
-      <section className="bg-[#f4efe8] py-20 border-t border-[#e2d9cd]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            {/* Daily Schedule Timeline */}
-            <div className="lg:col-span-7">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#e8ded0] text-[#6b553e] text-xs font-bold uppercase tracking-widest mb-4">
-                <Clock className="w-4 h-4 text-[#9c7f60]" />
-                Circadian & Care Rhythm
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#2d3748] font-serif mb-4">
-                Sample Newborn Daily Care Rhythm
-              </h2>
-              <p className="text-[#64748b] text-sm sm:text-base mb-8">
-                Infants thrive on predictable soothing cues. Here is an ideal day-flow balancing feeding, tummy time, and sleep.
-              </p>
-
-              <div className="space-y-4">
-                {dailySchedule.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="p-5 rounded-2xl bg-white border border-[#e8dfd2] shadow-sm flex items-start gap-4 hover:border-[#dfcca9] transition-all"
-                  >
-                    <div className="text-2xl p-2 rounded-xl bg-[#faf6f0] shrink-0">
-                      {item.icon}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#b45309] uppercase tracking-wider">
-                          {item.time}
-                        </span>
-                      </div>
-                      <h4 className="font-bold text-base text-[#2d3748] mt-0.5">{item.title}</h4>
-                      <p className="text-xs sm:text-sm text-[#64748b] mt-1">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Interactive Daily Milestone Checklist */}
-            <div className="lg:col-span-5 sticky top-8">
-              <div className="rounded-3xl bg-white border border-[#e8ded1] shadow-xl p-6 sm:p-8">
-                <div className="flex items-center justify-between pb-4 border-b border-[#f1e9df] mb-6">
-                  <div>
-                    <h3 className="font-bold text-xl text-[#2d3748] font-serif">
-                      Daily Care Checklist
-                    </h3>
-                    <p className="text-xs text-[#718096] mt-0.5">Track your newborn&apos;s key daily needs</p>
-                  </div>
-                  <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
-                    Interactive
-                  </span>
-                </div>
-
-                <div className="space-y-3">
-                  {[
-                    { id: "sleep", label: "Safe Sleep Setup: Bare crib, firm flat mattress, room temp 20–22°C" },
-                    { id: "tummy", label: "Completed 3–5 min gentle tummy time session" },
-                    { id: "burp", label: "Burped & held upright 15 mins after feeds" },
-                    { id: "temp", label: "Checked neck & chest for ideal body warmth" },
-                    { id: "skin", label: "Hydrated delicate skin & cleaned neck folds" },
-                    { id: "outdoor", label: "15 min natural daylight / outdoor stroll" },
-                  ].map((task) => (
-                    <button
-                      key={task.id}
-                      onClick={() => toggleCheck(task.id)}
-                      className={`w-full p-4 rounded-2xl border text-left flex items-start gap-3 transition-all ${
-                        checklist[task.id]
-                          ? "bg-emerald-50/70 border-emerald-200 text-emerald-950"
-                          : "bg-[#faf8f5] border-[#eae0d4] text-[#4a5568] hover:bg-white"
-                      }`}
-                    >
-                      <div
-                        className={`w-5 h-5 rounded-md border mt-0.5 flex items-center justify-center shrink-0 transition-colors ${
-                          checklist[task.id]
-                            ? "bg-emerald-600 border-emerald-600 text-white"
-                            : "border-gray-300 bg-white"
-                        }`}
-                      >
-                        {checklist[task.id] && <CheckCircle2 className="w-4 h-4" />}
-                      </div>
-                      <span className="text-xs sm:text-sm font-medium leading-snug">
-                        {task.label}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Pediatrician Health Club Signup */}
-                <div className="mt-8 pt-6 border-t border-[#f1e9df]">
-                  <h4 className="font-bold text-sm text-[#2d3748] mb-1">
-                    📩 Get Free Weekly Pediatric Guides
+                  <h4 className="text-lg font-bold text-white group-hover:text-[#dfb782] transition-colors">
+                    {h.title}
                   </h4>
-                  <p className="text-xs text-[#718096] mb-3">
-                    Age-tailored sleep routines, milestone trackers & nutrition advice.
-                  </p>
-                  {isSubscribed ? (
-                    <div className="p-3 rounded-xl bg-emerald-100 text-emerald-800 text-xs font-bold text-center">
-                      ✓ You are subscribed! Check your inbox for your Newborn Health PDF.
-                    </div>
-                  ) : (
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        if (emailInput.trim()) setIsSubscribed(true);
-                      }}
-                      className="flex gap-2"
-                    >
-                      <input
-                        type="email"
-                        value={emailInput}
-                        onChange={(e) => setEmailInput(e.target.value)}
-                        placeholder="parents.email@health.com"
-                        required
-                        className="flex-1 px-3.5 py-2.5 rounded-xl border border-[#ded3c5] text-xs focus:outline-none focus:ring-2 focus:ring-[#9c7f60]"
-                      />
-                      <button
-                        type="submit"
-                        className="px-4 py-2.5 rounded-xl bg-[#9c7f60] text-white text-xs font-bold hover:bg-[#856b50] transition-colors flex items-center gap-1 shrink-0"
-                      >
-                        Join
-                        <Send className="w-3.5 h-3.5" />
-                      </button>
-                    </form>
-                  )}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed">{h.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Section 3: 6 Health Pillars (Do's & Don'ts) */}
+      <div className="mb-24">
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <h3 className="text-2xl md:text-4xl font-extrabold text-white mb-4">
+            শিশু যত্নের ৬টি মৌলিক স্তম্ভ
+          </h3>
+          <p className="text-slate-300 text-sm md:text-base">
+            নিরাপত্তা নিশ্চিত করতে কী করবেন এবং কী পরিহার করবেন তার বিশেষজ্ঞ চেকলিস্ট।
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {pillars.map((pillar, idx) => (
+            <div
+              key={idx}
+              className={`p-6 rounded-3xl border ${pillar.color} backdrop-blur-md flex flex-col justify-between hover:scale-[1.01] transition-transform`}
+            >
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-2.5 rounded-2xl bg-slate-800 border border-slate-700">
+                    {pillar.icon}
+                  </div>
+                  <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${pillar.badgeColor}`}>
+                    গাইডলাইন {idx + 1}
+                  </span>
+                </div>
+                <h4 className="text-lg font-bold text-white mb-4">{pillar.title}</h4>
+
+                {/* Do's */}
+                <div className="mb-4">
+                  <h5 className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> যা অবশ্যই করবেন (Do's)
+                  </h5>
+                  <ul className="space-y-2">
+                    {pillar.dos.map((d, dIdx) => (
+                      <li key={dIdx} className="text-xs text-slate-200 flex items-start gap-2">
+                        <span className="text-emerald-400 font-bold mt-0.5">•</span>
+                        <span>{d}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Don'ts */}
+                <div>
+                  <h5 className="text-xs font-bold text-rose-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <XCircle className="w-3.5 h-3.5" /> যা পরিহার করবেন (Don'ts)
+                  </h5>
+                  <ul className="space-y-2">
+                    {pillar.donts.map((d, dIdx) => (
+                      <li key={dIdx} className="text-xs text-slate-300 flex items-start gap-2">
+                        <span className="text-rose-400 font-bold mt-0.5">•</span>
+                        <span>{d}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 4: Daily Interactive Care Routine Checklist */}
+      <div className="mb-24 p-8 md:p-12 rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 shadow-2xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-700">
+          <div>
+            <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider mb-2">
+              <Clock className="w-4 h-4" />
+              <span>দৈনিক যত্নের ইন্টারেক্টিভ চেকলিস্ট</span>
+            </div>
+            <h3 className="text-2xl md:text-3xl font-extrabold text-white">
+              নবজাতকের প্রতিদিনের স্বাস্থ্য ট্র্যাকার
+            </h3>
+          </div>
+          <div className="text-xs text-slate-300 bg-slate-900/80 px-4 py-2 rounded-2xl border border-slate-700">
+            টিক চিহ্ন দিয়ে আপনার দৈনিক অগ্রগতি চিহ্নিত করুন
           </div>
         </div>
-      </section>
 
-      {/* 5. CHAPTER: NON-TOXIC CERTIFICATIONS & FOOTER */}
-      <footer className="bg-[#1f2937] text-white pt-16 pb-12 border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Trust Badges */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-12 border-b border-gray-800 text-center">
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-              <div className="text-2xl mb-1">🌱</div>
-              <h5 className="font-bold text-sm text-white">100% FSC Beechwood</h5>
-              <p className="text-xs text-gray-400 mt-0.5">Sustainably harvested non-toxic wood</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { id: "sleep", label: "ঘুমের পজিশন: চিত করে শোয়ান ও খালি বিছানা", icon: "😴" },
+            { id: "tummy", label: "টামি টাইম: দিনে ১৫ মিনিট অনুশীলন সম্পন্ন", icon: "🧸" },
+            { id: "burp", label: "ঢেকুর: খাওয়ার পর ১৫ মিনিট সোজা রাখা", icon: "🍼" },
+            { id: "temp", label: "রুম তাপমাত্রা: ২০–২২°C ও আর্দ্রতা সঠিক আছে", icon: "🌡️" },
+            { id: "skin", label: "ত্বক ও মাড়ি: সুতি কাপড় দিয়ে পরিষ্কার রাখা", icon: "🌿" },
+            { id: "outdoor", label: "দিনের আলো: সকালের প্রাকৃতিক আলো দেখানো", icon: "☀️" },
+          ].map((item) => (
+            <div
+              key={item.id}
+              onClick={() => toggleCheck(item.id)}
+              className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+                checklist[item.id]
+                  ? "bg-emerald-950/40 border-emerald-500/60 text-emerald-200"
+                  : "bg-slate-900/50 border-slate-700 text-slate-300 hover:border-slate-500"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-xl">{item.icon}</span>
+                <span className="text-xs md:text-sm font-semibold">{item.label}</span>
+              </div>
+              <div
+                className={`w-5 h-5 rounded-lg flex items-center justify-center border transition-all ${
+                  checklist[item.id]
+                    ? "bg-emerald-500 border-emerald-400 text-slate-950"
+                    : "border-slate-600 bg-slate-800"
+                }`}
+              >
+                {checklist[item.id] && <CheckCircle2 className="w-3.5 h-3.5 stroke-[3]" />}
+              </div>
             </div>
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-              <div className="text-2xl mb-1">🛡️</div>
-              <h5 className="font-bold text-sm text-white">BPA & Lead Free</h5>
-              <p className="text-xs text-gray-400 mt-0.5">ASTM F963 & EN71 certified safe</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-              <div className="text-2xl mb-1">🩺</div>
-              <h5 className="font-bold text-sm text-white">Pediatric Approved</h5>
-              <p className="text-xs text-gray-400 mt-0.5">Oral & sensory milestone verified</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-              <div className="text-2xl mb-1">🌿</div>
-              <h5 className="font-bold text-sm text-white">Zero VOC Finishes</h5>
-              <p className="text-xs text-gray-400 mt-0.5">100% clean nursery air safety</p>
-            </div>
-          </div>
-
-          <div className="pt-10 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-gray-400">
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-serif font-bold text-[#dfb782]">Piwva</span>
-              <span>— Evidence-Based Newborn Nursery & Pediatric Milestone Essentials.</span>
-            </div>
-            <p>© {new Date().getFullYear()} Piwva Health & Nursery. All rights reserved.</p>
-          </div>
+          ))}
         </div>
-      </footer>
+      </div>
+
+      {/* Section 5: Pediatrician Weekly Newsletter */}
+      <div className="p-8 md:p-12 rounded-3xl bg-gradient-to-r from-amber-950/40 via-slate-900 to-indigo-950/40 border border-amber-500/30 shadow-2xl text-center">
+        <div className="max-w-2xl mx-auto">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-4 border border-amber-500/30">
+            <BookOpen className="w-6 h-6" />
+          </div>
+          <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-3">
+            সাপ্তাহিক শিশু বিশেষজ্ঞ স্বাস্থ্য ক্লাব
+          </h3>
+          <p className="text-slate-300 text-sm md:text-base mb-6">
+            আপনার শিশুর বয়স অনুযায়ী সাপ্তাহিক মাইলস্টোন, পুষ্টি তালিকা ও বিশেষজ্ঞ পরামর্শ পান সরাসরি আপনার ইমেইলে।
+          </p>
+
+          {isSubscribed ? (
+            <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500 text-emerald-300 text-sm font-bold flex items-center justify-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <span>অভিনন্দন! আপনার সাবস্ক্রিপশন সফল হয়েছে। সাপ্তাহিক টিপস শীঘ্রই পাবেন।</span>
+            </div>
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (emailInput.trim()) {
+                  soundFX.playChime(1046);
+                  setIsSubscribed(true);
+                }
+              }}
+              className="flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto"
+            >
+              <input
+                type="email"
+                required
+                placeholder="আপনার ইমেইল ঠিকানা লিখুন..."
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                className="w-full px-5 py-3 rounded-2xl bg-slate-950/80 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400"
+              />
+              <button
+                type="submit"
+                className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-[#dfb782] hover:bg-[#caa16d] text-slate-950 font-bold text-sm transition-all shadow-lg flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
+              >
+                <span>যুক্ত হোন</span>
+                <Send className="w-4 h-4" />
+              </button>
+            </form>
+          )}
+
+          <p className="text-[11px] text-slate-500 mt-4">
+            🔒 আমরা স্প্যাম করি না। যেকোনো সময় আনসাবস্ক্রাইব করতে পারবেন।
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
