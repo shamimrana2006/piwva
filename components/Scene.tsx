@@ -25,6 +25,7 @@ interface SceneProps {
   zoomTrigger?: number;
   replayIntroTrigger?: number;
   isMuted?: boolean;
+  onVideoAudioBlocked?: (isBlocked: boolean) => void;
   onLayoutChange?: (
     layout: LayoutCoords,
     activeDraggedId?: string | null,
@@ -142,6 +143,7 @@ export const Scene: React.FC<SceneProps> = ({
   zoomTrigger,
   replayIntroTrigger,
   isMuted = false,
+  onVideoAudioBlocked,
   onLayoutChange,
   onCtrlChange,
   onSpaceChange,
@@ -1167,37 +1169,45 @@ export const Scene: React.FC<SceneProps> = ({
     video.setAttribute("playsinline", "true");
     video.setAttribute("webkit-playsinline", "true");
     video.autoplay = true;
-    video.muted = true; // Required by browsers for guaranteed autoplay
-    video.defaultMuted = true;
     video.preload = "auto";
     videoRef.current = video;
 
-    const startVideoPlayback = () => {
+    const tryStartPlayback = () => {
+      // First attempt unmuted playback
+      video.muted = isMuted;
+      video.volume = isMuted ? 0 : 1.0;
       const playPromise = video.play();
       if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          video.muted = true;
-          video.play().catch(() => {});
-        });
+        playPromise
+          .then(() => {
+            onVideoAudioBlocked?.(false);
+          })
+          .catch(() => {
+            // Unmuted autoplay blocked by browser policy -> start muted and show sound trigger
+            video.muted = true;
+            video.play().catch(() => {});
+            onVideoAudioBlocked?.(true);
+          });
       }
     };
 
-    video.addEventListener("canplay", startVideoPlayback, { once: true });
+    video.addEventListener("canplay", tryStartPlayback, { once: true });
     video.load();
-    startVideoPlayback();
+    tryStartPlayback();
 
-    // Enable sound on first user gesture during intro if not muted
+    // Enable sound on first user gesture (click, tap, key)
     const enableAudioOnGesture = () => {
-      if (videoRef.current && isIntroActiveRef.current && !isMuted) {
+      if (videoRef.current && !isMuted) {
         videoRef.current.muted = false;
         videoRef.current.volume = 1.0;
         videoRef.current.play().catch(() => {});
+        onVideoAudioBlocked?.(false);
       }
     };
-    window.addEventListener("pointerdown", enableAudioOnGesture, { once: true });
-    window.addEventListener("keydown", enableAudioOnGesture, { once: true });
-    window.addEventListener("touchstart", enableAudioOnGesture, { once: true });
-    window.addEventListener("click", enableAudioOnGesture, { once: true });
+    window.addEventListener("pointerdown", enableAudioOnGesture);
+    window.addEventListener("keydown", enableAudioOnGesture);
+    window.addEventListener("touchstart", enableAudioOnGesture);
+    window.addEventListener("click", enableAudioOnGesture);
 
     const videoTex = new THREE.VideoTexture(video);
     videoTex.colorSpace = THREE.SRGBColorSpace;

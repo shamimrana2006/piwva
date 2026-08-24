@@ -11,6 +11,7 @@ import {
 import { Logo3DElement } from "@/components/Logo3DElement";
 import { TextColorTheme } from "@/components/create3DText";
 import { NewbornHealthGuideSections } from "@/components/NewbornHealthGuideSections";
+import { Volume2 } from "lucide-react";
 
 // Dynamic import for Scene to prevent SSR issues with Three.js
 const Scene = dynamic(
@@ -35,6 +36,7 @@ export default function Home() {
   const [zoomTrigger, setZoomTrigger] = useState<number>(0);
   const [replayIntroTrigger, setReplayIntroTrigger] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [isVideoAudioBlocked, setIsVideoAudioBlocked] = useState<boolean>(false);
   const [isLogoModalOpen, setIsLogoModalOpen] = useState<boolean>(false);
   const [isInspectorOpen, setIsInspectorOpen] = useState<boolean>(false);
   const [isCtrlHeld, setIsCtrlHeld] = useState<boolean>(false);
@@ -129,11 +131,29 @@ export default function Home() {
           zoomTrigger={zoomTrigger}
           replayIntroTrigger={replayIntroTrigger}
           isMuted={isMuted}
+          onVideoAudioBlocked={setIsVideoAudioBlocked}
           onLayoutChange={handleLayoutChange}
           onCtrlChange={setIsCtrlHeld}
           onSpaceChange={setIsSpaceHeld}
         />
       </div>
+
+      {/* Floating Sound Activation Trigger Pill when Browser Autoplay Policy blocks unmuted start */}
+      {isVideoAudioBlocked && !isMuted && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 animate-fadeIn select-none">
+          <button
+            onClick={() => {
+              setIsVideoAudioBlocked(false);
+              setReplayIntroTrigger((prev) => prev + 1);
+            }}
+            className="flex items-center gap-2.5 px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-xs sm:text-sm shadow-2xl border border-amber-300 ring-4 ring-amber-400/40 animate-bounce cursor-pointer transition-all hover:scale-105"
+            title="ভিডিওর সাউন্ড চালু করুন"
+          >
+            <Volume2 className="w-5 h-5 animate-pulse" />
+            <span>🔊 ভিডিওর সাউন্ড শুনতে এখানে ক্লিক করুন (সাউন্ড সহ জুম দেখুন)</span>
+          </button>
+        </div>
+      )}
 
       {/* Floating Live 3D Stage Tracker Badge */}
       <div className="fixed top-4 left-6 z-40 hidden sm:flex items-center gap-2.5">
