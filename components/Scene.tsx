@@ -186,18 +186,14 @@ export const Scene: React.FC<SceneProps> = ({
   const controlsRef = useRef<OrbitControls | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const introAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Mute / Unmute SoundFX and Video
+  // Mute / Unmute SoundFX and Video Audio
   useEffect(() => {
     soundFX.setMuted(isMuted);
-    if (videoRef.current) {
-      if (isMuted) {
-        videoRef.current.muted = true;
-        videoRef.current.volume = 0;
-      } else if (isIntroActiveRef.current) {
-        videoRef.current.muted = false;
-        videoRef.current.volume = 1.0;
-      }
+    if (introAudioRef.current) {
+      introAudioRef.current.muted = isMuted;
+      introAudioRef.current.volume = isMuted ? 0 : 1.0;
     }
   }, [isMuted]);
 
@@ -221,12 +217,18 @@ export const Scene: React.FC<SceneProps> = ({
       soundFX.playWhoosh();
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
-        videoRef.current.muted = isMuted;
-        videoRef.current.volume = isMuted ? 0 : 1.0;
         videoRef.current.play().catch(() => {});
       }
+      if (introAudioRef.current) {
+        introAudioRef.current.currentTime = 0;
+        introAudioRef.current.muted = isMuted;
+        introAudioRef.current.volume = isMuted ? 0 : 1.0;
+        if (!isMuted) {
+          introAudioRef.current.play().catch(() => {});
+        }
+      }
     }
-  }, [replayIntroTrigger]);
+  }, [replayIntroTrigger, isMuted]);
 
   // Update 3D Text colors dynamically
   useEffect(() => {
@@ -1169,38 +1171,48 @@ export const Scene: React.FC<SceneProps> = ({
     video.setAttribute("playsinline", "true");
     video.setAttribute("webkit-playsinline", "true");
     video.autoplay = true;
+    video.muted = true; // Video element is always muted to guarantee 100% visual playback across all browsers
+    video.defaultMuted = true;
     video.preload = "auto";
     videoRef.current = video;
 
-    const tryStartPlayback = () => {
-      // First attempt unmuted playback
-      video.muted = isMuted;
-      video.volume = isMuted ? 0 : 1.0;
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
+    const startVideo = () => {
+      video.play().catch(() => {
+        video.muted = true;
+        video.play().catch(() => {});
+      });
+    };
+    video.addEventListener("canplay", startVideo, { once: true });
+    video.load();
+    startVideo();
+
+    // Independent Audio Track for the first 2.5 seconds
+    const introAudio = new Audio("/images/logo/short-reals.mp4");
+    introAudio.preload = "auto";
+    introAudio.volume = isMuted ? 0 : 1.0;
+    introAudioRef.current = introAudio;
+
+    const playIntroAudio = () => {
+      if (!isMuted && isIntroActiveRef.current) {
+        introAudio.volume = 1.0;
+        const p = introAudio.play();
+        if (p !== undefined) {
+          p.then(() => {
             onVideoAudioBlocked?.(false);
-          })
-          .catch(() => {
-            // Unmuted autoplay blocked by browser policy -> start muted and show sound trigger
-            video.muted = true;
-            video.play().catch(() => {});
+          }).catch(() => {
             onVideoAudioBlocked?.(true);
           });
+        }
       }
     };
+    introAudio.addEventListener("canplaythrough", playIntroAudio, { once: true });
+    playIntroAudio();
 
-    video.addEventListener("canplay", tryStartPlayback, { once: true });
-    video.load();
-    tryStartPlayback();
-
-    // Enable sound on first user gesture (click, tap, key)
+    // Enable sound on first user gesture if browser blocked initial autoplay audio
     const enableAudioOnGesture = () => {
-      if (videoRef.current && !isMuted) {
-        videoRef.current.muted = false;
-        videoRef.current.volume = 1.0;
-        videoRef.current.play().catch(() => {});
+      if (introAudioRef.current && isIntroActiveRef.current && !isMuted) {
+        introAudioRef.current.volume = 1.0;
+        introAudioRef.current.play().catch(() => {});
         onVideoAudioBlocked?.(false);
       }
     };
@@ -1996,44 +2008,48 @@ export const Scene: React.FC<SceneProps> = ({
       const delta = clock.getDelta();
       const time = clock.getElapsedTime();
 
-      // 1. Cinematic Intro Camera Zoom-out Animation (First 3s Sound On -> Then Strictly Muted & Zoom Out)
+      // 1. Cinematic Intro Camera Zoom-out Animation (First 2.5s Video + Audio -> Then Video Only & Zoom Out)
       if (isIntroActiveRef.current) {
         introTimeRef.current += delta;
         const t = introTimeRef.current;
 
-        const SLOW_PHASE_DURATION = 3.0; // Exactly 3 seconds with sound on
+        const SLOW_PHASE_DURATION = 2.5; // First 2.5 seconds with video + audio
         const FULL_ZOOM_DURATION = 2.8; // 2.8 seconds of full zoom out transition
         const TOTAL_DURATION = SLOW_PHASE_DURATION + FULL_ZOOM_DURATION;
 
-        // Video Audio Management: Only first 3.0s has sound, then immediately muted!
-        if (videoRef.current && !isMuted) {
-          if (t < SLOW_PHASE_DURATION) {
-            videoRef.current.volume = 1.0;
-            videoRef.current.muted = false;
+        // Audio Management: Only first 2.5s has audio, after 2.5s audio is strictly muted/paused!
+        if (introAudioRef.current) {
+          if (t < SLOW_PHASE_DURATION && !isMuted) {
+            if (introAudioRef.current.paused) {
+              introAudioRef.current.play().catch(() => {});
+            }
+            introAudioRef.current.volume = 1.0;
           } else {
-            videoRef.current.volume = 0;
-            videoRef.current.muted = true;
+            introAudioRef.current.volume = 0;
+            if (!introAudioRef.current.paused) {
+              introAudioRef.current.pause();
+            }
           }
         }
 
         if (t < SLOW_PHASE_DURATION) {
-          // Phase 1: First 3 seconds - VERY SLOW zoom out
+          // Phase 1: First 2.5 seconds - VERY SLOW zoom out (Video + Audio)
           const p = t / SLOW_PHASE_DURATION;
           const ease = 1 - Math.pow(1 - p, 2); // gentle quad ease
           camera.position.lerpVectors(INTRO_START_POS, SLOW_DRIFT_POS, ease);
           controls.target.lerpVectors(INTRO_START_TARGET, SLOW_DRIFT_TARGET, ease);
         } else if (t <= TOTAL_DURATION) {
-          // Phase 2: Smooth acceleration into full zoom out
+          // Phase 2: Full zoom out transition (Video continues looping silently!)
           const p = (t - SLOW_PHASE_DURATION) / FULL_ZOOM_DURATION;
           const ease = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; // smooth cubic ease in-out
           camera.position.lerpVectors(SLOW_DRIFT_POS, DEFAULT_CAM_POS, ease);
           controls.target.lerpVectors(SLOW_DRIFT_TARGET, DEFAULT_CAM_TARGET, ease);
         } else {
-          // Finished: Enable full user controls & ensure video is muted
+          // Finished: Enable full user controls, audio stopped, video loops silently forever
           isIntroActiveRef.current = false;
-          if (videoRef.current) {
-            videoRef.current.volume = 0;
-            videoRef.current.muted = true;
+          if (introAudioRef.current) {
+            introAudioRef.current.volume = 0;
+            introAudioRef.current.pause();
           }
           camera.position.copy(DEFAULT_CAM_POS);
           controls.target.copy(DEFAULT_CAM_TARGET);
