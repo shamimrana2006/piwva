@@ -320,8 +320,8 @@ export const Scene: React.FC<SceneProps> = ({
     const height = container.clientHeight || window.innerHeight;
 
     const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 1000);
-    // START CAMERA POSITION: Zoomed In on the Animated Video Screen!
-    camera.position.set(-4.8, 3.8, 5.8);
+    // START CAMERA POSITION: Exact User Intro Zoom Coordinates
+    camera.position.set(-4.42, 6.07, 9.11);
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({
@@ -345,7 +345,7 @@ export const Scene: React.FC<SceneProps> = ({
     controls.minDistance = 7;
     controls.maxDistance = 45;
     controls.maxPolarAngle = Math.PI / 2 + 0.15;
-    controls.target.set(-4.8, 3.8, 2.2); // Start looking directly at the zoomed video screen
+    controls.target.set(-5.24, 2.97, -0.07); // Exact user intro target
     controls.enableRotate = true;
     controls.enablePan = true;
     controls.enableZoom = false; // Zoom via Ctrl + wheel
@@ -1360,7 +1360,7 @@ export const Scene: React.FC<SceneProps> = ({
       "দৃষ্টি আকর্ষণ: ৮-১২ ইঞ্চি দূরে আকর্ষণীয় খেলনা রেখে মাথা তোলার উৎসাহ দিন।",
       "মাথার আকার সুরক্ষা: নিয়মিত টামি টাইম শিশুর মাথার চ্যাপ্টা হওয়া রোধ করে।",
     ], "#ea580c", "#ffedd5");
-    registerDraggable(tummyTipsCard, [-5.0, -28.2, 3.0], baseTilt, [1.5, -1.0, 1.2], 1.3, 0.07, 0.025, "card_tummy_tips", "Tummy Time Milestone Card");
+    registerDraggable(tummyTipsCard, [1.26, -29.29, 2.43], baseTilt, [1.5, -1.0, 1.2], 1.3, 0.07, 0.025, "card_tummy_tips", "Tummy Time Milestone Card");
 
     // 21. Crawling Baby Photo (Bengali)
     const crawlingPhotoCard = create3DPhotoCard(
@@ -1920,10 +1920,10 @@ export const Scene: React.FC<SceneProps> = ({
     onWindowScroll();
 
     // =========================================================================
-    // CINEMATIC INTRO ZOOM-OUT ANIMATION TARGETS
+    // CINEMATIC INTRO ZOOM-OUT ANIMATION TARGETS (EXACT USER COORDINATES)
     // =========================================================================
-    const INTRO_START_POS = new THREE.Vector3(-4.8, 3.8, 5.8);
-    const INTRO_START_TARGET = new THREE.Vector3(-4.8, 3.8, 2.2);
+    const INTRO_START_POS = new THREE.Vector3(-4.42, 6.07, 9.11);
+    const INTRO_START_TARGET = new THREE.Vector3(-5.24, 2.97, -0.07);
 
     const DEFAULT_CAM_POS = new THREE.Vector3(18.62, 9.99, 16.72);
     const DEFAULT_CAM_TARGET = new THREE.Vector3(0, 0, 0);
