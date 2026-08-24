@@ -157,7 +157,7 @@ export const Scene: React.FC<SceneProps> = ({
 
   // Intro Animation Tracking
   const isIntroActiveRef = useRef(true);
-  const introProgressRef = useRef(0);
+  const introTimeRef = useRef(0);
 
   // Material refs
   const textFrontMatRef = useRef<THREE.MeshPhysicalMaterial | null>(null);
@@ -206,7 +206,7 @@ export const Scene: React.FC<SceneProps> = ({
   useEffect(() => {
     if (replayIntroTrigger !== undefined && replayIntroTrigger > 0) {
       isIntroActiveRef.current = true;
-      introProgressRef.current = 0;
+      introTimeRef.current = 0;
       soundFX.playWhoosh();
     }
   }, [replayIntroTrigger]);
@@ -1925,6 +1925,10 @@ export const Scene: React.FC<SceneProps> = ({
     const INTRO_START_POS = new THREE.Vector3(-4.42, 6.07, 9.11);
     const INTRO_START_TARGET = new THREE.Vector3(-5.24, 2.97, -0.07);
 
+    // Intermediate gentle drift target after 3s (keeps logo/video close & in focus)
+    const SLOW_DRIFT_POS = new THREE.Vector3(-4.65, 6.25, 9.6);
+    const SLOW_DRIFT_TARGET = new THREE.Vector3(-5.15, 2.92, -0.05);
+
     const DEFAULT_CAM_POS = new THREE.Vector3(18.62, 9.99, 16.72);
     const DEFAULT_CAM_TARGET = new THREE.Vector3(0, 0, 0);
 
@@ -1937,18 +1941,35 @@ export const Scene: React.FC<SceneProps> = ({
       const delta = clock.getDelta();
       const time = clock.getElapsedTime();
 
-      // 1. Cinematic Intro Camera Zoom-out Animation
+      // 1. Cinematic Intro Camera Zoom-out Animation (3s Very Slow -> Then Full Zoom Out)
       if (isIntroActiveRef.current) {
-        introProgressRef.current += delta / 2.8; // 2.8s smooth duration
-        if (introProgressRef.current >= 1) {
-          introProgressRef.current = 1;
+        introTimeRef.current += delta;
+        const t = introTimeRef.current;
+
+        const SLOW_PHASE_DURATION = 3.0; // 3 full seconds of slow, gentle zoom & video showcase
+        const FULL_ZOOM_DURATION = 3.2; // 3.2 seconds of full zoom out transition
+        const TOTAL_DURATION = SLOW_PHASE_DURATION + FULL_ZOOM_DURATION;
+
+        if (t < SLOW_PHASE_DURATION) {
+          // Phase 1: First 3 seconds - VERY SLOW zoom out
+          const p = t / SLOW_PHASE_DURATION;
+          const ease = 1 - Math.pow(1 - p, 2); // gentle quad ease
+          camera.position.lerpVectors(INTRO_START_POS, SLOW_DRIFT_POS, ease);
+          controls.target.lerpVectors(INTRO_START_TARGET, SLOW_DRIFT_TARGET, ease);
+        } else if (t <= TOTAL_DURATION) {
+          // Phase 2: Smooth acceleration into full zoom out
+          const p = (t - SLOW_PHASE_DURATION) / FULL_ZOOM_DURATION;
+          const ease = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; // smooth cubic ease in-out
+          camera.position.lerpVectors(SLOW_DRIFT_POS, DEFAULT_CAM_POS, ease);
+          controls.target.lerpVectors(SLOW_DRIFT_TARGET, DEFAULT_CAM_TARGET, ease);
+        } else {
+          // Finished: Enable full user controls
           isIntroActiveRef.current = false;
+          camera.position.copy(DEFAULT_CAM_POS);
+          controls.target.copy(DEFAULT_CAM_TARGET);
           controls.enableRotate = !isCtrlHeldRef.current && !isSpaceHeldRef.current;
           controls.enablePan = !isCtrlHeldRef.current && !isSpaceHeldRef.current;
         }
-        const ease = 1 - Math.pow(1 - introProgressRef.current, 3); // Cubic ease out
-        camera.position.lerpVectors(INTRO_START_POS, DEFAULT_CAM_POS, ease);
-        controls.target.lerpVectors(INTRO_START_TARGET, DEFAULT_CAM_TARGET, ease);
         controls.update();
       }
 
