@@ -161,8 +161,10 @@ export const Scene: React.FC<SceneProps> = ({
   const scrollProgressPropRef = useRef(scrollProgress);
   scrollProgressPropRef.current = scrollProgress;
 
-  // Intro Animation Tracking
-  const isIntroActiveRef = useRef(true);
+  // Intro Animation Tracking (Only active if at page scroll top on initial load)
+  const isIntroActiveRef = useRef(
+    typeof window !== "undefined" ? window.scrollY <= 60 : true
+  );
   const introTimeRef = useRef(0);
 
   // Material refs
@@ -1093,7 +1095,7 @@ export const Scene: React.FC<SceneProps> = ({
     const screenPlane = new THREE.Mesh(createRoundedPlaneGeometry(3.36, 7.16, 0.38, 16), new THREE.MeshBasicMaterial({ map: screenTex }));
     screenPlane.position.set(0, 0, 0.175);
     phoneGroup.add(screenPlane);
-    registerDraggable(phoneGroup, [-8.54, -0.1, 4.48], baseTilt, [0, 0, -1.0], 1.0, 0.04, 0.015, "phone", "Smartphone 3D Mockup");
+    registerDraggable(phoneGroup, [-8.54, -0.09, 4.48], baseTilt, [0, 0, -1.0], 1.0, 0.04, 0.015, "phone", "Smartphone 3D Mockup");
 
     // 2. 3D Piwva Letters
     const piwvaTextGroup = new THREE.Group();
@@ -1119,7 +1121,7 @@ export const Scene: React.FC<SceneProps> = ({
     piwvaTextGroup.add(textRing);
     const piwvaHitbox = new THREE.Mesh(new THREE.BoxGeometry(4.8, 1.8, 1.0), new THREE.MeshBasicMaterial({ visible: false }));
     piwvaTextGroup.add(piwvaHitbox);
-    registerDraggable(piwvaTextGroup, [0.15, 1.23, 1.98], [-0.55, 0.38, 0.35], [1.6, 2.2, 1.5], 1.7, 0.07, 0.025, "piwva_logo", "Piwva 3D Logo Letters");
+    registerDraggable(piwvaTextGroup, [0.15, 1.18, 1.98], [-0.55, 0.38, 0.35], [1.6, 2.2, 1.5], 1.7, 0.07, 0.025, "piwva_logo", "Piwva 3D Logo Letters");
 
     // 3. User Designed Circular Logo JPEG Medallion
     const designedLogoGroup = new THREE.Group();
@@ -1164,7 +1166,7 @@ export const Scene: React.FC<SceneProps> = ({
     const logoJpgFace = new THREE.Mesh(new THREE.CircleGeometry(1.2, 48), new THREE.MeshBasicMaterial({ map: logoJpgTex }));
     logoJpgFace.position.set(0, 0, 0.068);
     designedLogoGroup.add(logoJpgFace);
-    registerDraggable(designedLogoGroup, [-0.2, -1.8, 3.8], baseTilt, [0, 1.0, 1.0], 1.4, 0.08, 0.03, "designed_logo_circle", "Piwva Designed Logo Medallion");
+    registerDraggable(designedLogoGroup, [-0.2, -1.87, 3.8], baseTilt, [0, 1.0, 1.0], 1.4, 0.08, 0.03, "designed_logo_circle", "Piwva Designed Logo Medallion");
 
     // 4. MP4 Video Screen (ZOOM HERO START ELEMENT)
     const video = document.createElement("video");
@@ -1243,7 +1245,7 @@ export const Scene: React.FC<SceneProps> = ({
     );
     videoScreen.position.set(0, 0, 0.068);
     videoGroup.add(videoScreen);
-    registerDraggable(videoGroup, [-4.8, 3.8, 2.2], baseTilt, [-1.2, 1.0, 1.0], 1.3, 0.07, 0.025, "video_screen_circle", "Piwva Baby Video Reel");
+    registerDraggable(videoGroup, [-4.8, 3.82, 2.2], baseTilt, [-1.2, 1.0, 1.0], 1.3, 0.07, 0.025, "video_screen_circle", "Piwva Baby Video Reel");
 
     // 5. Nursery Climate Card (Bengali)
     const palCard = create3DHealthCard("নার্সারি ও রুমের সঠিক আবহাওয়া", "🌿 ১০০% নিরাপদ ও স্বাস্থ্যকর পরিবেশ", [
@@ -1251,7 +1253,7 @@ export const Scene: React.FC<SceneProps> = ({
       "কোমল ত্বকের যত্ন: ১০০% অর্গানিক সুতি কাপড় ত্বকের আর্দ্রতা বজায় রাখে।",
       "জিরো-ভিওসি বিচউড: কোনো ক্ষতিকর রঙ বা টক্সিক কেমিক্যাল নেই।",
     ], "#15803d", "#dcfce7", 3.4, 3.2);
-    registerDraggable(palCard, [5.25, 0.59, 1.28], [-0.56, 0.38, 0.36], [-2.6, 1.8, 1.4], 1.3, 0.08, 0.03, "color_palette", "Nursery Climate Card");
+    registerDraggable(palCard, [5.25, 0.56, 1.28], [-0.56, 0.38, 0.36], [-2.6, 1.8, 1.4], 1.3, 0.08, 0.03, "color_palette", "Nursery Climate Card");
 
     // 6. Motor Milestones Card (Bengali)
     const motorCard = create3DHealthCard("শারীরিক ও মস্তিষ্কের বিকাশ", "🩺 শিশু বিশেষজ্ঞ নির্দেশিকা • ০–৬ মাস", [
@@ -1259,7 +1261,7 @@ export const Scene: React.FC<SceneProps> = ({
       "দৃষ্টিশক্তি বিকাশ: ৮–১২ ইঞ্চি দূর থেকে আকর্ষণীয় খেলনা দেখান।",
       "মাড়ির আরাম: ঠান্ডা খাঁটি বিচউড মাড়ির চুলকানি ও ব্যথা কমায়।",
     ], "#b45309", "#fef3c7", 3.4, 3.2);
-    registerDraggable(motorCard, [5.82, 2.96, -5.65], [-0.58, 0.4, 0.38], [-2.6, -1.6, 1.8], 1.5, 0.1, 0.035, "product_card", "Motor & Sensory Health Card");
+    registerDraggable(motorCard, [5.82, 2.87, -5.65], [-0.58, 0.4, 0.38], [-2.6, -1.6, 1.8], 1.5, 0.1, 0.035, "product_card", "Motor & Sensory Health Card");
 
     // 7. Health Guide Button Pill (Bengali)
     const snGroup = new THREE.Group();
@@ -1284,7 +1286,7 @@ export const Scene: React.FC<SceneProps> = ({
     const snFace = new THREE.Mesh(createRoundedPlaneGeometry(2.98, 0.63, 0.25, 16), new THREE.MeshBasicMaterial({ map: snTex }));
     snFace.position.set(0, 0, 0.058);
     snGroup.add(snFace);
-    registerDraggable(snGroup, [-0.18, 4.84, 4.33], [-0.56, 0.38, 0.36], [2.4, 1.2, 1.6], 1.4, 0.06, 0.02, "shop_now_btn", "Health Guide Pill Button");
+    registerDraggable(snGroup, [-0.18, 4.78, 4.33], [-0.56, 0.38, 0.36], [2.4, 1.2, 1.6], 1.4, 0.06, 0.02, "shop_now_btn", "Health Guide Pill Button");
 
     // 8. Action Icons
     const actsGroup = new THREE.Group();
@@ -1312,7 +1314,7 @@ export const Scene: React.FC<SceneProps> = ({
       icFace.position.set((i - 1) * 0.95, 0, 0.06);
       actsGroup.add(icFace);
     });
-    registerDraggable(actsGroup, [-7.32, -1.73, 5.79], baseTilt, [-1.5, -1.2, 1.0], 1.1, 0.05, 0.02, "action_buttons", "Health Action Icons");
+    registerDraggable(actsGroup, [-7.32, -1.74, 5.79], baseTilt, [-1.5, -1.2, 1.0], 1.1, 0.05, 0.02, "action_buttons", "Health Action Icons");
 
     // =========================================================================
     // STAGE 0.5: SENSORY & LAUGHING BABY (Y: -4 to -9) - [4 Elements]
@@ -1325,7 +1327,7 @@ export const Scene: React.FC<SceneProps> = ({
     const block2 = new THREE.Mesh(createRoundedBoxGeometry(0.8, 0.8, 0.8, 0.1, 6), new THREE.MeshPhysicalMaterial({ color: 0xccd5ae, roughness: 0.3 }));
     block2.position.set(0.65, -0.45, 0.25);
     blocksGroup.add(block2);
-    registerDraggable(blocksGroup, [-4.7, -4.5, 2.0], [-0.45, 0.35, 0.25], [-3.0, 0.5, 1.8], 1.6, 0.09, 0.03, "wooden_blocks", "Montessori Wooden Blocks");
+    registerDraggable(blocksGroup, [-4.7, -4.44, 2.0], [-0.45, 0.35, 0.25], [-3.0, 0.5, 1.8], 1.6, 0.09, 0.03, "wooden_blocks", "Montessori Wooden Blocks");
 
     // 10. Baby Rattle
     const rattleGroup = new THREE.Group();
@@ -1337,7 +1339,7 @@ export const Scene: React.FC<SceneProps> = ({
       bMesh.position.set(Math.cos(angle) * 0.85, Math.sin(angle) * 0.85, 0);
       rattleGroup.add(bMesh);
     });
-    registerDraggable(rattleGroup, [4.8, -4.8, 1.8], [-0.48, 0.36, 0.3], [3.0, 2.2, 1.6], 1.8, 0.08, 0.025, "baby_rattle", "Baby Rattle & Teether");
+    registerDraggable(rattleGroup, [4.8, -4.81, 1.8], [-0.48, 0.36, 0.3], [3.0, 2.2, 1.6], 1.8, 0.08, 0.025, "baby_rattle", "Baby Rattle & Teether");
 
     // 11. Laughing Baby Photo (Bengali)
     const laughingCard = create3DPhotoCard(
@@ -1352,7 +1354,7 @@ export const Scene: React.FC<SceneProps> = ({
 
     // 12. Ring Stacker
     const ringStacker = create3DRingStacker();
-    registerDraggable(ringStacker, [-0.2, -8.2, 4.2], [-0.4, 0.35, 0.2], [0, 1.2, 1.0], 1.5, 0.08, 0.03, "ring_stacker_3d", "3D Wooden Ring Stacker");
+    registerDraggable(ringStacker, [-0.2, -8.22, 4.2], [-0.4, 0.35, 0.2], [0, 1.2, 1.0], 1.5, 0.08, 0.03, "ring_stacker_3d", "3D Wooden Ring Stacker");
 
     // =========================================================================
     // STAGE 1: SAFE SLEEP & SIDS PROTOCOL (Y: -13 to -22) - [6 Elements]
@@ -1367,7 +1369,7 @@ export const Scene: React.FC<SceneProps> = ({
       "#dbeafe",
       "#1d4ed8"
     );
-    registerDraggable(sleepPhotoCard, [-5.5, -14.5, 3.2], baseTilt, [1.5, 1.0, 1.0], 1.3, 0.08, 0.03, "card_sleep_photo", "Sleeping Baby Photo Card");
+    registerDraggable(sleepPhotoCard, [-5.5, -14.42, 3.2], baseTilt, [1.5, 1.0, 1.0], 1.3, 0.08, 0.03, "card_sleep_photo", "Sleeping Baby Photo Card");
 
     // 14. Safe Sleep Tips (Bengali)
     const sleepTipsCard = create3DHealthCard("নিরাপদ ঘুমের ৪টি মৌলিক নিয়ম", "😴 ০–১২ মাস বয়সের প্রোটোকল", [
@@ -1376,15 +1378,15 @@ export const Scene: React.FC<SceneProps> = ({
       "তাপমাত্রা ২০–২২°C: শিশুর অতিরিক্ত গরম হওয়া প্রতিরোধ করে।",
       "রুম শেয়ারিং: প্রথম ৬ মাস শিশুকে নিজের রুমের পাশে রাখুন।",
     ], "#3b82f6", "#dbeafe");
-    registerDraggable(sleepTipsCard, [4.8, -15.0, 1.5], baseTilt, [-1.5, -1.0, 1.2], 1.4, 0.07, 0.025, "card_sleep_tips", "Safe Sleep Guidelines Card");
+    registerDraggable(sleepTipsCard, [4.8, -15.01, 1.5], baseTilt, [-1.5, -1.0, 1.2], 1.4, 0.07, 0.025, "card_sleep_tips", "Safe Sleep Guidelines Card");
 
     // 15. Moon Mobile
     const moonMobile = create3DMoonMobile();
-    registerDraggable(moonMobile, [-0.2, -16.2, 4.0], [-0.4, 0.3, 0.2], [0, 1.5, 1.0], 1.6, 0.09, 0.03, "moon_nightlight", "3D Moon & Stars Mobile");
+    registerDraggable(moonMobile, [-0.2, -16.12, 4.0], [-0.4, 0.3, 0.2], [0, 1.5, 1.0], 1.6, 0.09, 0.03, "moon_nightlight", "3D Moon & Stars Mobile");
 
     // 16. Climate Medallion (Bengali)
     const tempBadge = create3DCylinderMedallion("🌡️", "২০–২২°C", "৪৫–৫৫% আর্দ্রতা", "শ্বাসনালী সুরক্ষা");
-    registerDraggable(tempBadge, [8.2, -14.0, -1.5], baseTilt, [-1.0, 1.2, 1.0], 1.2, 0.08, 0.02, "temp_badge", "Climate & Humidity Medallion");
+    registerDraggable(tempBadge, [8.2, -14.07, -1.5], baseTilt, [-1.0, 1.2, 1.0], 1.2, 0.08, 0.02, "temp_badge", "Climate & Humidity Medallion");
 
     // 17. Swaddle Safety Card (Bengali)
     const swaddleCard = create3DHealthCard("সোয়াডলিং ও রূপান্তর গাইড", "🌿 নিরাপদ সোয়াডল নিয়ম", [
@@ -1392,7 +1394,7 @@ export const Scene: React.FC<SceneProps> = ({
       "কাত হওয়ার লক্ষণ পেলে হাত খোলা: শিশু নিজে কাত হতে পারলে হাত মুক্ত রাখুন।",
       "১০০% সুতি মস্লিন কাপড়: অতিরিক্ত তাপ তৈরি হওয়া প্রতিরোধ করে।",
     ], "#0d9488", "#ccfbf1");
-    registerDraggable(swaddleCard, [-7.8, -19.5, 1.0], baseTilt, [1.0, 1.0, 1.0], 1.3, 0.07, 0.02, "swaddle_guide_card", "Swaddle Safety Guide Card");
+    registerDraggable(swaddleCard, [-7.8, -19.44, 1.0], baseTilt, [1.0, 1.0, 1.0], 1.3, 0.07, 0.02, "swaddle_guide_card", "Swaddle Safety Guide Card");
 
     // 18. Circadian Lamp
     const lampGroup = new THREE.Group();
@@ -1401,7 +1403,7 @@ export const Scene: React.FC<SceneProps> = ({
     lampGroup.add(lampDome);
     const lampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.9, 0.3, 32), new THREE.MeshPhysicalMaterial({ color: 0xdfb782, roughness: 0.3 }));
     lampGroup.add(lampBase);
-    registerDraggable(lampGroup, [1.5, -20.2, 3.5], [-0.3, 0.2, 0.1], [0, 1.0, 1.0], 1.5, 0.07, 0.02, "circadian_lamp_3d", "3D Nursery Nightlight Lamp");
+    registerDraggable(lampGroup, [1.5, -20.22, 3.5], [-0.3, 0.2, 0.1], [0, 1.0, 1.0], 1.5, 0.07, 0.02, "circadian_lamp_3d", "3D Nursery Nightlight Lamp");
 
     // =========================================================================
     // STAGE 2: TUMMY TIME, CRAWLING & BRAIN (Y: -26 to -38) - [8 Elements]
@@ -1425,7 +1427,7 @@ export const Scene: React.FC<SceneProps> = ({
       "দৃষ্টি আকর্ষণ: ৮-১২ ইঞ্চি দূরে আকর্ষণীয় খেলনা রেখে মাথা তোলার উৎসাহ দিন।",
       "মাথার আকার সুরক্ষা: নিয়মিত টামি টাইম শিশুর মাথার চ্যাপ্টা হওয়া রোধ করে।",
     ], "#ea580c", "#ffedd5");
-    registerDraggable(tummyTipsCard, [1.26, -29.29, 2.43], baseTilt, [1.5, -1.0, 1.2], 1.3, 0.07, 0.025, "card_tummy_tips", "Tummy Time Milestone Card");
+    registerDraggable(tummyTipsCard, [1.26, -29.22, 2.43], baseTilt, [1.5, -1.0, 1.2], 1.3, 0.07, 0.025, "card_tummy_tips", "Tummy Time Milestone Card");
 
     // 21. Crawling Baby Photo (Bengali)
     const crawlingPhotoCard = create3DPhotoCard(
@@ -1436,7 +1438,7 @@ export const Scene: React.FC<SceneProps> = ({
       "#e0e7ff",
       "#3730a3"
     );
-    registerDraggable(crawlingPhotoCard, [-6.8, -32.5, 1.5], baseTilt, [1.2, 1.0, 1.0], 1.4, 0.08, 0.03, "card_crawling_photo", "Crawling Baby Photo Card");
+    registerDraggable(crawlingPhotoCard, [-6.8, -32.56, 1.5], baseTilt, [1.2, 1.0, 1.0], 1.4, 0.08, 0.03, "card_crawling_photo", "Crawling Baby Photo Card");
 
     // 22. Pediatrician Endorsement (Bengali)
     const reviewCard = create3DHealthCard("শিশু বিশেষজ্ঞের ক্লিনিক্যাল সুপারিশ", "⭐ ৫.০ মেডিকেল পরামর্শ", [
@@ -1444,7 +1446,7 @@ export const Scene: React.FC<SceneProps> = ({
       "ক্লিনিক্যাল মানদণ্ড: প্রাকৃতিক বিচউড ও পরিষ্কার ঘরের পরিবেশ।",
       "প্রাথমিক বিকাশ: শিশুর স্নায়বিক বুদ্ধিমত্তা বৃদ্ধিতে সহায়ক।",
     ], "#15803d", "#dcfce7");
-    registerDraggable(reviewCard, [6.5, -33.5, 0.5], baseTilt, [-1.2, 1.0, 1.0], 1.2, 0.07, 0.02, "parent_review", "Pediatric Endorsement Card");
+    registerDraggable(reviewCard, [6.5, -33.56, 0.5], baseTilt, [-1.2, 1.0, 1.0], 1.2, 0.07, 0.02, "parent_review", "Pediatric Endorsement Card");
 
     // 23. High-Contrast Vision (Bengali)
     const contrastCard = create3DHealthCard("হাই-কনট্রাস্ট দৃষ্টিশক্তি গাইড", "👀 স্নায়বিক উদ্দীপনা", [
@@ -1452,7 +1454,7 @@ export const Scene: React.FC<SceneProps> = ({
       "৮–১২ ইঞ্চি দূরত্ব: নবজাতকের স্পষ্ট দেখার আদর্শ দূরত্ব।",
       "ধীর মুভমেন্ট: খেলনাগুলো আস্তে আস্তে ডানে-বামে সরান।",
     ], "#1e293b", "#f1f5f9");
-    registerDraggable(contrastCard, [0.0, -34.8, 3.8], baseTilt, [0, 1.0, 1.0], 1.5, 0.08, 0.025, "contrast_card_3d", "High-Contrast Visual Card");
+    registerDraggable(contrastCard, [0.0, -34.75, 3.8], baseTilt, [0, 1.0, 1.0], 1.5, 0.08, 0.025, "contrast_card_3d", "High-Contrast Visual Card");
 
     // 24. Abacus 3D
     const abacus3D = new THREE.Group();
@@ -1469,14 +1471,14 @@ export const Scene: React.FC<SceneProps> = ({
         abacus3D.add(bead);
       });
     });
-    registerDraggable(abacus3D, [-4.5, -36.5, 2.5], baseTilt, [1.0, 0.5, 1.0], 1.6, 0.08, 0.03, "wooden_abacus_3d", "3D Montessori Abacus Model");
+    registerDraggable(abacus3D, [-4.5, -36.58, 2.5], baseTilt, [1.0, 0.5, 1.0], 1.6, 0.08, 0.03, "wooden_abacus_3d", "3D Montessori Abacus Model");
 
     // 25 & 26. Milestones Badges (Bengali)
     const m3Badge = create3DCylinderMedallion("✨", "৩ মাসের লক্ষ্য", "ঘাড় শক্ত ও হাসিমুখ", "মেডিকেল চেক", true, 0.75);
-    registerDraggable(m3Badge, [4.8, -37.2, 1.2], baseTilt, [-1.0, 1.0, 1.0], 1.3, 0.07, 0.02, "milestone_3m_card", "3-Month Milestones Badge");
+    registerDraggable(m3Badge, [4.8, -37.13, 1.2], baseTilt, [-1.0, 1.0, 1.0], 1.3, 0.07, 0.02, "milestone_3m_card", "3-Month Milestones Badge");
 
     const m6Badge = create3DCylinderMedallion("🌟", "৬ মাসের লক্ষ্য", "সাপোর্ট নিয়ে বসা", "মোটর মাইলস্টোন", true, 0.75);
-    registerDraggable(m6Badge, [-0.5, -38.5, 3.5], baseTilt, [0, 1.0, 1.0], 1.4, 0.08, 0.025, "milestone_6m_card", "6-Month Milestones Badge");
+    registerDraggable(m6Badge, [-0.5, -38.55, 3.5], baseTilt, [0, 1.0, 1.0], 1.4, 0.08, 0.025, "milestone_6m_card", "6-Month Milestones Badge");
 
     // =========================================================================
     // STAGE 3: TEETHING, ORAL HEALTH & WEANING (Y: -43 to -56) - [8 Elements]
@@ -1491,7 +1493,7 @@ export const Scene: React.FC<SceneProps> = ({
       "#fef3c7",
       "#b45309"
     );
-    registerDraggable(teethingPhotoCard, [-5.4, -44.0, 3.2], baseTilt, [1.5, 1.0, 1.0], 1.4, 0.08, 0.03, "card_teething_photo", "Teething Baby Photo Card");
+    registerDraggable(teethingPhotoCard, [-5.4, -44.06, 3.2], baseTilt, [1.5, 1.0, 1.0], 1.4, 0.08, 0.03, "card_teething_photo", "Teething Baby Photo Card");
 
     // 28. Teething Tips (Bengali)
     const teethingTipsCard = create3DHealthCard("টিথিং উপশমের নিরাপদ উপায়", "🌱 নিরাপদ টিথিং প্রোটোকল", [
@@ -1500,15 +1502,15 @@ export const Scene: React.FC<SceneProps> = ({
       "ক্ষতিকর জেল বর্জন: বেনজোকেনযুক্ত অসাড়কারী জেল কখনো দেবেন না।",
       "মুখের পরিচ্ছন্নতা: প্রথম দাঁতের আগেই পরিষ্কার ভেজা গজ দিয়ে মাড়ি মুছুন।",
     ], "#15803d", "#dcfce7");
-    registerDraggable(teethingTipsCard, [4.9, -45.2, 2.0], baseTilt, [-1.5, -1.0, 1.2], 1.3, 0.07, 0.025, "card_teething_tips", "Teething Guidelines Card");
+    registerDraggable(teethingTipsCard, [4.9, -45.27, 2.0], baseTilt, [-1.5, -1.0, 1.2], 1.3, 0.07, 0.025, "card_teething_tips", "Teething Guidelines Card");
 
     // 29. Silicone Chain
     const siliconeChain = create3DSiliconeChain();
-    registerDraggable(siliconeChain, [0.1, -46.5, 4.0], [-0.4, 0.35, 0.2], [0, 1.0, 1.0], 1.5, 0.08, 0.025, "silicone_beads_3d", "3D Silicone Teether Chain");
+    registerDraggable(siliconeChain, [0.1, -46.42, 4.0], [-0.4, 0.35, 0.2], [0, 1.0, 1.0], 1.5, 0.08, 0.025, "silicone_beads_3d", "3D Silicone Teether Chain");
 
     // 30. Eco Badge (Bengali)
     const ecoBadge = create3DCylinderMedallion("🌱", "১০০% নিরাপদ", "এফএসসি বিচউড", "টক্সিক উপাদান-মুক্ত");
-    registerDraggable(ecoBadge, [8.4, -44.5, -1.0], baseTilt, [-1.0, 1.2, 1.0], 1.5, 0.08, 0.025, "eco_badge", "100% Newborn Safe Health Seal");
+    registerDraggable(ecoBadge, [8.4, -44.55, -1.0], baseTilt, [-1.0, 1.2, 1.0], 1.5, 0.08, 0.025, "eco_badge", "100% Newborn Safe Health Seal");
 
     // 31. Solids Guide (Bengali)
     const solidsCard = create3DHealthCard("প্রথম শক্ত খাবার ও উইনিং গাইড", "🥑 ৬+ মাস পুষ্টি শুরু", [
@@ -1516,7 +1518,7 @@ export const Scene: React.FC<SceneProps> = ({
       "আয়রনসমৃদ্ধ প্রথম খাবার: ম্যাশ করা অ্যাভোকাডো, মিষ্টি আলু, ডাল।",
       "নতুন খাবারের নিয়ম: প্রতি ৩-৫ দিনে একটি করে নতুন খাবার দিন।",
     ], "#16a34a", "#dcfce7");
-    registerDraggable(solidsCard, [-7.2, -50.5, 1.2], baseTilt, [1.0, 1.0, 1.0], 1.3, 0.07, 0.02, "solids_guide_card", "Weaning & Solids Guide Card");
+    registerDraggable(solidsCard, [-7.2, -50.53, 1.2], baseTilt, [1.0, 1.0, 1.0], 1.3, 0.07, 0.02, "solids_guide_card", "Weaning & Solids Guide Card");
 
     // 32. Wooden Spoon
     const spoonGroup = new THREE.Group();
@@ -1526,7 +1528,7 @@ export const Scene: React.FC<SceneProps> = ({
     const bowl = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), new THREE.MeshPhysicalMaterial({ color: 0xdfb782, roughness: 0.25 }));
     bowl.scale.set(1.0, 1.4, 0.4);
     spoonGroup.add(bowl);
-    registerDraggable(spoonGroup, [6.5, -51.2, 1.8], [0.4, -0.3, 0.5], [1.0, 0, 1.0], 1.6, 0.08, 0.03, "wooden_spoon_3d", "3D Wooden Weaning Spoon");
+    registerDraggable(spoonGroup, [6.5, -51.27, 1.8], [0.4, -0.3, 0.5], [1.0, 0, 1.0], 1.6, 0.08, 0.03, "wooden_spoon_3d", "3D Wooden Weaning Spoon");
 
     // 33. Oral Hygiene (Bengali)
     const oralWipeCard = create3DHealthCard("মাড়ি ও দাঁতের যত্ন প্রোটোকল", "🪥 দৈনিক মুখের পরিচ্ছন্নতা", [
@@ -1534,14 +1536,14 @@ export const Scene: React.FC<SceneProps> = ({
       "সিলিকন ফিঙ্গার ব্রাশ: প্রথম দাঁত উঠলে নরম ব্রাশ ব্যবহার করুন।",
       "শুধুমাত্র পানি: ঘুমানোর সময় বোতলে কোনো মিষ্টি পানীয় দেবেন না।",
     ], "#0284c7", "#e0f2fe");
-    registerDraggable(oralWipeCard, [0.0, -52.8, 3.6], baseTilt, [0, 1.0, 1.0], 1.4, 0.08, 0.025, "oral_wipe_card", "Oral & Gum Care Card");
+    registerDraggable(oralWipeCard, [0.0, -52.85, 3.6], baseTilt, [0, 1.0, 1.0], 1.4, 0.08, 0.025, "oral_wipe_card", "Oral & Gum Care Card");
 
     // 34. Silicone Star Toy
     const starToy = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.65, 0.15, 5), new THREE.MeshPhysicalMaterial({ color: 0xf4a261, roughness: 0.35, clearcoat: 0.3 }));
     starToy.rotation.x = Math.PI / 2;
     const starToyGroup = new THREE.Group();
     starToyGroup.add(starToy);
-    registerDraggable(starToyGroup, [-4.5, -54.5, 2.5], baseTilt, [-0.5, 1.0, 1.0], 1.5, 0.08, 0.025, "silicone_star_toy", "3D Silicone Star Teether");
+    registerDraggable(starToyGroup, [-4.5, -54.55, 2.5], baseTilt, [-0.5, 1.0, 1.0], 1.5, 0.08, 0.025, "silicone_star_toy", "3D Silicone Star Teether");
 
     // =========================================================================
     // STAGE 4: KANGAROO CARE, COLIC & BONDING (Y: -60 to -72) - [8 Elements]
@@ -1565,11 +1567,11 @@ export const Scene: React.FC<SceneProps> = ({
       "ঘড়ির কাঁটার দিকে পেটে ম্যাসাজ: কলিক ও পেটের ক্র্যাম্প দূর করে।",
       "স্কিন-টু-স্কিন স্পর্শ: মা-বাবার উষ্ণতা শিশুর মানসিক চাপ কমায়।",
     ], "#9333ea", "#f3e8ff");
-    registerDraggable(colicTipsCard, [-5.2, -62.5, 2.5], baseTilt, [1.5, -1.0, 1.2], 1.3, 0.07, 0.025, "card_colic_tips", "Colic & Gas Relief Card");
+    registerDraggable(colicTipsCard, [-5.2, -62.43, 2.5], baseTilt, [1.5, -1.0, 1.2], 1.3, 0.07, 0.025, "card_colic_tips", "Colic & Gas Relief Card");
 
     // 37. Cloud Mobile
     const cloudMobile = create3DCloudMobile();
-    registerDraggable(cloudMobile, [0.0, -64.0, 4.0], [-0.4, 0.35, 0.2], [0, 1.0, 1.0], 1.5, 0.08, 0.03, "cloud_mobile_3d", "3D Cloud Nursery Mobile");
+    registerDraggable(cloudMobile, [0.0, -63.95, 4.0], [-0.4, 0.35, 0.2], [0, 1.0, 1.0], 1.5, 0.08, 0.03, "cloud_mobile_3d", "3D Cloud Nursery Mobile");
 
     // 38. Newsletter Card (Bengali)
     const newsCard = create3DHealthCard("সাপ্তাহিক স্বাস্থ্য টিপস ক্লাব", "💌 নিয়মিত স্বাস্থ্য পরামর্শ", [
@@ -1577,7 +1579,7 @@ export const Scene: React.FC<SceneProps> = ({
       "বিশেষজ্ঞদের উত্তর: শিশুর বিকাশ সংক্রান্ত যেকোনো প্রশ্নের সমাধান।",
       "নিরাপদ খাদ্য তালিকা: ৬ মাস পরবর্তী স্বাস্থ্যকর পুষ্টি নির্দেশিকা।",
     ], "#b45309", "#fef3c7", 3.8, 3.2);
-    registerDraggable(newsCard, [8.2, -61.5, -0.5], baseTilt, [-1.0, 1.2, 1.0], 1.2, 0.09, 0.03, "newsletter_card", "Pediatrician Health Tips Card");
+    registerDraggable(newsCard, [8.2, -61.56, -0.5], baseTilt, [-1.0, 1.2, 1.0], 1.2, 0.09, 0.03, "newsletter_card", "Pediatrician Health Tips Card");
 
     // 39. Burping Techniques (Bengali)
     const burpingCard = create3DHealthCard("ঢেকুর তোলানোর ৩টি সহজ পদ্ধতি", "🍼 ফিডিং কমফোর্ট", [
@@ -1585,7 +1587,7 @@ export const Scene: React.FC<SceneProps> = ({
       "বসা অবস্থায় থুতনি ধরে: শিশুকে সামনের দিকে ঝুঁকিয়ে পিঠে হাত বুলান।",
       "কোলের ওপর উপুড় করে: পেটের ওপর নরম সাপোর্ট দিয়ে পিঠে মালিশ করুন।",
     ], "#d97706", "#fef3c7");
-    registerDraggable(burpingCard, [-7.5, -67.5, 1.5], baseTilt, [1.0, 1.0, 1.0], 1.3, 0.07, 0.02, "burping_guide_card", "Burping Techniques Guide Card");
+    registerDraggable(burpingCard, [-7.5, -67.49, 1.5], baseTilt, [1.0, 1.0, 1.0], 1.3, 0.07, 0.02, "burping_guide_card", "Burping Techniques Guide Card");
 
     // 40. Massage Routine (Bengali)
     const massageCard = create3DHealthCard("শিশুর বডি ম্যাসাজ রুটিন", "🌿 প্রশান্তি ও আরামদায়ক ঘুম", [
@@ -1593,11 +1595,11 @@ export const Scene: React.FC<SceneProps> = ({
       "আই-লাভ-ইউ স্ট্রোক: কোলন বরাবর আলতো হাতে মালিশ করুন।",
       "ঘুমের আগের প্রস্তুতি: হার্ট রেট শান্ত করে গভীর ঘুমে সাহায্য করে।",
     ], "#059669", "#d1fae5");
-    registerDraggable(massageCard, [6.5, -68.2, 1.2], baseTilt, [-1.0, 1.0, 1.0], 1.4, 0.08, 0.025, "massage_oil_card", "Infant Massage Routine Card");
+    registerDraggable(massageCard, [6.5, -68.12, 1.2], baseTilt, [-1.0, 1.0, 1.0], 1.4, 0.08, 0.025, "massage_oil_card", "Infant Massage Routine Card");
 
     // 41. Kangaroo Badge (Bengali)
     const kangarooBadge = create3DCylinderMedallion("❤️", "স্কিন-টু-স্কিন", "হৃদস্পন্দন নিয়ন্ত্রণ", "আবেগময় বন্ধন");
-    registerDraggable(kangarooBadge, [-0.2, -69.5, 3.8], baseTilt, [0, 1.0, 1.0], 1.5, 0.08, 0.025, "kangaroo_badge", "Kangaroo Care Bonding Seal");
+    registerDraggable(kangarooBadge, [-0.2, -69.42, 3.8], baseTilt, [0, 1.0, 1.0], 1.5, 0.08, 0.025, "kangaroo_badge", "Kangaroo Care Bonding Seal");
 
     // 42. Heart Shield
     const heartShield = new THREE.Mesh(
@@ -1607,7 +1609,7 @@ export const Scene: React.FC<SceneProps> = ({
     heartShield.rotation.x = Math.PI / 2;
     const heartShieldGroup = new THREE.Group();
     heartShieldGroup.add(heartShield);
-    registerDraggable(heartShieldGroup, [-4.5, -71.0, 2.8], baseTilt, [-0.5, 1.0, 1.0], 1.6, 0.08, 0.03, "heart_shield_3d", "3D Heart Health Shield");
+    registerDraggable(heartShieldGroup, [-4.5, -71.07, 2.8], baseTilt, [-0.5, 1.0, 1.0], 1.6, 0.08, 0.03, "heart_shield_3d", "3D Heart Health Shield");
 
     // =========================================================================
     // STAGE 5: CLINICAL WARNING SIGNS & EMERGENCIES (Y: -76 to -88) - [6 Elements]
@@ -1619,7 +1621,7 @@ export const Scene: React.FC<SceneProps> = ({
       "সঠিক থার্মোমিটার: নবজাতকের ক্ষেত্রে ডিজিটাল থার্মোমিটার ব্যবহার করুন।",
       "অ্যাসপিরিন নিষিদ্ধ: ডাক্তারের পরামর্শ ছাড়া কোনো ওষুধ দেবেন না।",
     ], "#dc2626", "#fee2e2");
-    registerDraggable(feverCard, [-5.5, -77.0, 3.0], baseTilt, [1.2, 1.0, 1.0], 1.3, 0.08, 0.03, "fever_protocol_card", "Infant Fever Protocol Card");
+    registerDraggable(feverCard, [-5.5, -76.99, 3.0], baseTilt, [1.2, 1.0, 1.0], 1.3, 0.08, 0.03, "fever_protocol_card", "Infant Fever Protocol Card");
 
     // 44. Dehydration Checklist (Bengali)
     const dehydrationCard = create3DHealthCard("ডিহাইড্রেশনের ক্লিনিক্যাল লক্ষণ", "💧 পানিশূন্যতা চেকলিস্ট", [
@@ -1627,15 +1629,15 @@ export const Scene: React.FC<SceneProps> = ({
       "মাথার তালু দেবে যাওয়া: মাথার নরম অংশটি বসে বা দেবে যাওয়া।",
       "শুষ্ক মুখ ও চোখ: কান্নার সময় চোখে পানি না আসা এবং মুখ শুষ্ক থাকা।",
     ], "#0284c7", "#e0f2fe");
-    registerDraggable(dehydrationCard, [5.2, -78.2, 2.0], baseTilt, [-1.2, 1.0, 1.0], 1.4, 0.07, 0.025, "dehydration_card", "Dehydration Warning Signs Card");
+    registerDraggable(dehydrationCard, [5.2, -78.13, 2.0], baseTilt, [-1.2, 1.0, 1.0], 1.4, 0.07, 0.025, "dehydration_card", "Dehydration Warning Signs Card");
 
     // 45. Respiratory Signs (Bengali)
     const breathingCard = create3DHealthCard("শ্বাসকষ্টের সতর্কতা সংকেত", "🫁 শ্বাসপ্রশ্বাস পর্যবেক্ষণ", [
       "দ্রুত শ্বাসপ্রশ্বাস: মিনিটে ৬০ বারের বেশি দ্রুত শ্বাস নেওয়া।",
       "বুকের খাঁচা দেবে যাওয়া: শ্বাসের সাথে বুকের চামড়া ভেতরে ঢুকে যাওয়া।",
-      "নাকের ছিদ্র ফুলে ওঠা ও গোঙানি: দ্রুত শিশু হাসপাতালে যাওয়ার জরুরি লক্ষণ।",
+      "নাকের ছিdr ফুলে ওঠা ও গোঙানি: দ্রুত শিশু হাসপাতালে যাওয়ার জরুরি লক্ষণ।",
     ], "#b91c1c", "#fee2e2");
-    registerDraggable(breathingCard, [0.0, -81.5, 3.8], baseTilt, [0, 1.0, 1.0], 1.5, 0.08, 0.025, "breathing_card", "Respiratory Distress Card");
+    registerDraggable(breathingCard, [0.0, -81.44, 3.8], baseTilt, [0, 1.0, 1.0], 1.5, 0.08, 0.025, "breathing_card", "Respiratory Distress Card");
 
     // 46. Thermometer 3D
     const thermoGroup = new THREE.Group();
@@ -1646,11 +1648,11 @@ export const Scene: React.FC<SceneProps> = ({
     thermoTip.rotation.z = Math.PI / 4;
     thermoTip.position.set(-0.55, -0.55, 0);
     thermoGroup.add(thermoTip);
-    registerDraggable(thermoGroup, [-6.8, -83.5, 1.8], [0.2, 0.3, 0.4], [1.0, 0, 1.0], 1.6, 0.08, 0.03, "thermometer_3d", "3D Pediatric Thermometer");
+    registerDraggable(thermoGroup, [-6.8, -83.54, 1.8], [0.2, 0.3, 0.4], [1.0, 0, 1.0], 1.6, 0.08, 0.03, "thermometer_3d", "3D Pediatric Thermometer");
 
     // 47. Stethoscope Badge (Bengali)
     const stethBadge = create3DCylinderMedallion("🩺", "ক্লিনিক্যাল পরামর্শ", "শিশু বিশেষজ্ঞ অনুমোদিত", "সঠিক চিকিৎসা মানদণ্ড");
-    registerDraggable(stethBadge, [6.8, -84.2, 1.2], baseTilt, [-1.0, 1.0, 1.0], 1.3, 0.07, 0.02, "stethoscope_badge", "Clinical Advisory Badge");
+    registerDraggable(stethBadge, [6.8, -84.15, 1.2], baseTilt, [-1.0, 1.0, 1.0], 1.3, 0.07, 0.02, "stethoscope_badge", "Clinical Advisory Badge");
 
     // 48. First Aid Box
     const kitGroup = new THREE.Group();
@@ -1661,7 +1663,7 @@ export const Scene: React.FC<SceneProps> = ({
     const cross2 = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.6, 0.02), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
     cross2.position.z = 0.41;
     kitGroup.add(cross1, cross2);
-    registerDraggable(kitGroup, [-0.2, -86.5, 3.6], [-0.4, 0.3, 0.2], [0, 1.0, 1.0], 1.5, 0.08, 0.025, "first_aid_kit_3d", "3D Nursery First Aid Box");
+    registerDraggable(kitGroup, [-0.2, -86.51, 3.6], [-0.4, 0.3, 0.2], [0, 1.0, 1.0], 1.5, 0.08, 0.025, "first_aid_kit_3d", "3D Nursery First Aid Box");
 
     // =========================================================================
     // STAGE 6: CERTIFICATIONS, RHYTHMS & CREST (Y: -90 to -105) - [6 Elements]
@@ -1669,11 +1671,11 @@ export const Scene: React.FC<SceneProps> = ({
 
     // 49. FSC Wood Seal (Bengali)
     const fscSeal = create3DCylinderMedallion("🌲", "১০০% প্রাকৃতিক", "এফএসসি বিচউড", "লেড ও কেমিক্যাল-মুক্ত");
-    registerDraggable(fscSeal, [-5.5, -92.0, 3.0], baseTilt, [1.0, 1.0, 1.0], 1.4, 0.08, 0.025, "fsc_wood_seal", "FSC Beechwood Certified Seal");
+    registerDraggable(fscSeal, [-5.5, -91.93, 3.0], baseTilt, [1.0, 1.0, 1.0], 1.4, 0.08, 0.025, "fsc_wood_seal", "FSC Beechwood Certified Seal");
 
     // 50. BPA-Free Seal (Bengali)
     const bpaSeal = create3DCylinderMedallion("🛡️", "বিপিএ-মুক্ত", "ল্যাব টেস্টে নিরাপদ", "শিশুর শতভাগ সুরক্ষা");
-    registerDraggable(bpaSeal, [5.5, -93.2, 2.0], baseTilt, [-1.0, 1.0, 1.0], 1.3, 0.07, 0.025, "bpa_free_seal", "BPA & Phthalate Free Seal");
+    registerDraggable(bpaSeal, [5.5, -93.15, 2.0], baseTilt, [-1.0, 1.0, 1.0], 1.3, 0.07, 0.025, "bpa_free_seal", "BPA & Phthalate Free Seal");
 
     // 51. Daily Rhythm Card (Bengali)
     const rhythmCard = create3DHealthCard("নবজাতকের দৈনিক যত্নের রুটিন", "⏰ নিয়মমাফিক জীবনধারা", [
@@ -1681,7 +1683,7 @@ export const Scene: React.FC<SceneProps> = ({
       "টামি টাইম ও খেলা: সক্রিয় সময়ে ৩-৫ মিনিট খেলাধুলা করান।",
       "রাতের রুটিন: কুসুম গরম পানিতে গোসল, হালকা আলো ও শান্ত পরিবেশ।",
     ], "#6366f1", "#e0e7ff");
-    registerDraggable(rhythmCard, [0.0, -96.5, 3.8], baseTilt, [0, 1.0, 1.0], 1.5, 0.08, 0.025, "daily_rhythm_card", "Daily Care Rhythm Card");
+    registerDraggable(rhythmCard, [0.0, -96.46, 3.8], baseTilt, [0, 1.0, 1.0], 1.5, 0.08, 0.025, "daily_rhythm_card", "Daily Care Rhythm Card");
 
     // 52. Bathing Card (Bengali)
     const bathCard = create3DHealthCard("কুসুম গরম পানিতে গোসলের নিয়ম", "🛁 নিরাপদ গোসল গাইড", [
@@ -1689,15 +1691,15 @@ export const Scene: React.FC<SceneProps> = ({
       "নাড়ি শুকাতে স্পঞ্জ বাথ: নাড়ি কাটার অংশটি সবসময় শুকনো রাখুন।",
       "সপ্তাহে ২–৩ দিন: প্রতিদিন গোসল না করিয়ে নরম কাপড় দিয়ে মুছুন।",
     ], "#0284c7", "#e0f2fe");
-    registerDraggable(bathCard, [-6.5, -99.5, 1.8], baseTilt, [1.0, 1.0, 1.0], 1.3, 0.07, 0.02, "bath_time_card", "Bathing & Water Care Card");
+    registerDraggable(bathCard, [-6.5, -99.44, 1.8], baseTilt, [1.0, 1.0, 1.0], 1.3, 0.07, 0.02, "bath_time_card", "Bathing & Water Care Card");
 
     // 53. Piwva Gold Crest (Bengali)
     const crestBadge = create3DCylinderMedallion("👑", "PIWVA এক্সিলেন্স", "অর্গানিক ও নিরাপদ যত্ন", "মন্টেশ্বরী স্ট্যান্ডার্ড", true, 0.95);
-    registerDraggable(crestBadge, [6.2, -100.5, 1.2], baseTilt, [-1.0, 1.0, 1.0], 1.4, 0.08, 0.025, "piwva_gold_crest", "Piwva Gold Royal Crest");
+    registerDraggable(crestBadge, [6.2, -100.56, 1.2], baseTilt, [-1.0, 1.0, 1.0], 1.4, 0.08, 0.025, "piwva_gold_crest", "Piwva Gold Royal Crest");
 
     // 54. Pediatric Board Seal (Bengali)
     const boardSeal = create3DCylinderMedallion("🩺", "মেডিকেল বোর্ড", "শিশু বিশেষজ্ঞ সিল", "ক্লিনিক্যাল সুরক্ষা", true, 0.85);
-    registerDraggable(boardSeal, [-0.2, -103.5, 3.5], baseTilt, [0, 1.0, 1.0], 1.5, 0.08, 0.025, "pediatric_club_seal", "Pediatric Advisory Board Seal");
+    registerDraggable(boardSeal, [-0.2, -103.45, 3.5], baseTilt, [0, 1.0, 1.0], 1.5, 0.08, 0.025, "pediatric_club_seal", "Pediatric Advisory Board Seal");
 
     // =========================================================================
     // INTERACTIVE DRAG & CONTROLS SETUP (WITH SPACEBAR ARTBOARD PANNING!)
@@ -1997,6 +1999,10 @@ export const Scene: React.FC<SceneProps> = ({
     const DEFAULT_CAM_POS = new THREE.Vector3(18.62, 9.99, 16.72);
     const DEFAULT_CAM_TARGET = new THREE.Vector3(0, 0, 0);
 
+    // Exact user angle and zoom perspective when scrolling down
+    const SCROLL_CAM_POS = new THREE.Vector3(6.45, 10.6, 19.14);
+    const SCROLL_CAM_TARGET = new THREE.Vector3(0, 0, 0);
+
     // Render & Animation Loop
     let animId: number;
     const clock = new THREE.Clock();
@@ -2064,7 +2070,7 @@ export const Scene: React.FC<SceneProps> = ({
 
       currentScrollProgress += (targetProgress - currentScrollProgress) * 0.08;
 
-      // 1. Smooth 3D Journey Y-displacement (Covers all 54 elements from 0 to -102)
+      // 1. Smooth 3D Journey Y-displacement (Covers all 54 elements from 0 to -104)
       rootGroup.position.y = currentScrollProgress * 106.0;
 
       // 2. Incremental Scroll Artboard Zoom (Gradually zooms in closer from 1.0x to 1.30x as you scroll)
@@ -2078,6 +2084,13 @@ export const Scene: React.FC<SceneProps> = ({
       dustParticles.position.y = Math.sin(time * 0.5) * 0.6;
 
       if (!isIntroActiveRef.current) {
+        // Dynamic Camera Angle & Zoom Shift towards [6.45, 10.6, 19.14] on scroll
+        const dynamicBaseCamPos = new THREE.Vector3().lerpVectors(DEFAULT_CAM_POS, SCROLL_CAM_POS, currentScrollProgress);
+        if (!isCtrlHeldRef.current && !isSpaceHeldRef.current && !isPanningArtboardRef.current && !activeDragged.current) {
+          camera.position.lerp(dynamicBaseCamPos, delta * 1.5);
+          controls.target.lerp(SCROLL_CAM_TARGET, delta * 1.5);
+        }
+
         controls.enableRotate = !isCtrlHeldRef.current && !isSpaceHeldRef.current;
         controls.enablePan = !isCtrlHeldRef.current && !isSpaceHeldRef.current;
         controls.update();
